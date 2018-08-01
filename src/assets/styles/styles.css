@@ -1,0 +1,206 @@
+html,
+body {
+	width: 100%;
+	color: #a3a3a3;
+	font-size: 14px;
+	background-color: rgba(0, 0, 0, .5);
+}
+
+.color-white {
+	color: #fff;
+}
+
+.color-green {
+	color: #4cae4c;
+}
+
+.color-red {
+	color: red;
+}
+
+.bg-color {
+	background-color: rgba(0, 0, 0, .5);
+}
+
+.header {
+	background: #000;
+}
+
+
+/**/
+
+.mgtb5 {
+	margin: 5px 0;
+}
+
+.mgt10 {
+	margin-top: 10px;
+}
+
+.mgt15 {
+	margin-top: 15px;
+}
+
+.mgl10 {
+	margin-left: 10px;
+}
+
+.mgl15 {
+	margin-left: 15px;
+}
+
+.pd15 {
+	padding: 15px;
+}
+
+.pd30 {
+	padding: 30px;
+}
+
+.dis-inl-blk {
+	display: -moz-inline-box;
+	display: -webkit-inline-box;
+	display: inline-block;
+}
+
+.v-a-middl {
+	vertical-align: middle;
+}
+
+.v-a-btm {
+	vertical-align: bottom;
+}
+
+.table th,
+.table td {
+	text-align: center;
+	vertical-align: middle !important;
+}
+
+.txt-ct {
+	text-align: center !important;
+}
+
+.txt-lf {
+	text-align: left !important;
+}
+
+.txt-rt {
+	text-align: right !important;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+/**/
+
+
+/*header*/
+
+.header {
+	width: 100%;
+	height: 70px;
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 9;
+}
+
+.header-logo {
+	color: #fff;
+	font-size: 30px;
+	text-align: center;
+	font-weight: bold;
+	width: 260px;
+	height: 70px;
+	line-height: 70px;
+	border-right: 1px solid #333333;
+}
+
+.header-infor {
+	font-size: 0;
+	margin-top: 15px;
+}
+
+.header-img {
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	overflow: hidden;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+}
+
+.header-infor>p {
+	display: inline-block;
+	line-height: 40px;
+	margin-left: 15px;
+	font-size: 16px;
+	color: #a3a3a3;
+	vertical-align: top;
+}
+
+.header-return {
+	font-size: 16px;
+	padding: 0 26px;
+	height: 70px;
+	line-height: 70px;
+	margin-left: 30px;
+	border-left: 1px solid #333;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+.header-infor:hover p,
+.header-return:hover {
+	color: #fff;
+}
+
+
+/*header end*/
+
+
+/*导航*/
+
+.nav-main {
+	width: 260px;
+	height: 100%;
+	position: fixed;
+	left: 0;
+	top: 70px;
+	z-index: 8;
+}
+
+.nav-content li a {
+	display: block;
+	width: 100%;
+	height: 46px;
+	line-height: 46px;
+	color: #a3a3a3;
+	font-size: 14px;
+	text-indent: 28px;
+	cursor: pointer;
+}
+
+.nav-content li a:hover,
+.nav-content li a.current {
+	color: #fff;
+	font-weight: bold;
+}
+
+.nav-content li a>.glyphicon {
+	margin-right: 14px;
+	margin-top: 14px;
+}
+
+
+/*导航 end*/
+
+.container-main {
+	margin-left: 260px;
+	padding: 20px;
+	padding-top: 90px;
+}
