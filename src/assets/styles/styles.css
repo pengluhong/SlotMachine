@@ -1,8 +1,10 @@
 html,
 body {
 	width: 100%;
+	min-width: 1200px;
 	color: #a3a3a3;
 	font-size: 14px;
+	background-color: #3f3f3f;
 	background-color: rgba(0, 0, 0, .5);
 }
 
@@ -19,6 +21,7 @@ body {
 }
 
 .bg-color {
+	background-color: #1f1f1f;
 	background-color: rgba(0, 0, 0, .5);
 }
 
@@ -93,6 +96,7 @@ body {
 	cursor: pointer;
 }
 
+
 /**/
 
 
@@ -100,6 +104,7 @@ body {
 
 .header {
 	width: 100%;
+	min-width: 1200px;
 	height: 70px;
 	position: fixed;
 	left: 0;

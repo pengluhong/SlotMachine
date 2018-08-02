@@ -5,17 +5,21 @@ import BaseLayout from '@/components/base/baseLayout';
 import NotFoundComponent from '@/components/base/notFound';
 import MainLayout from '@/components/main/layout/mainLayout';
 import Index from '@/components/main/index/index';
-import GameDetails from '@/components/main/games/gameDetails';
-import MemberInfor from '@/components/main/member/memberInfor';
-import MemberCard from '@/components/main/member/memberCard';
-import Notice from '@/components/main/notice/Notice';
-import ProbabilityControl from '@/components/main/Console/probabilityControl';
+
+import GlobalConfiguration from '@/components/main/gameConsole/globalConfiguration';
+import GameConfiguration from '@/components/main/gameConsole/gameConfiguration';
+import AnnouncementConfiguration from '@/components/main/gameConsole/announcementConfiguration';
+
+import GlobalStatistics from '@/components/main/dataStatistics/globalStatistics';
+import RoomStatistics from '@/components/main/dataStatistics/roomStatistics';
+import MembershipStatistics from '@/components/main/dataStatistics/membershipStatistics';
+import MembershipStatisticsDetails from '@/components/main/dataStatistics/membershipStatisticsDetails';
 
 Vue.use(Router)
 
 export default new Router({
 	mode: 'history',
-	//linkExactActiveClass: 'current',
+	linkExactActiveClass: 'current',
 	routes: [{
 			// 找不到页面
 			path: '*',
@@ -27,30 +31,40 @@ export default new Router({
 			children: [{
 				path: '',
 				component: MainLayout,
-				children: [{
-					path: '',
-					component: Index,
-				}, {
-					//游戏数据
-					path: 'GameDetails',
-					component: GameDetails,
-				}, {
-					//会员信息查询
-					path: 'MemberInfor',
-					component: MemberInfor,
-				}, {
-					//会员牌局查询
-					path: 'MemberCard',
-					component: MemberCard,
-				}, {
-					//会员牌局查询
-					path: 'Notice',
-					component: Notice,
-				}, {
-					//概率游戏控制台
-					path: 'ProbabilityControl',
-					component: ProbabilityControl,
-				}]
+				children: [ //{
+					//path: '',
+					//component: Index,
+					//},
+					{
+						//全局配置
+						path: '',
+						component: GlobalConfiguration,
+					}, {
+						//游戏配置
+						path: 'GameConfiguration',
+						component: GameConfiguration,
+					}, {
+						//公告推送配置
+						path: 'AnnouncementConfiguration',
+						component: AnnouncementConfiguration,
+					}, {
+						//全局统计
+						path: 'GlobalStatistics',
+						component: GlobalStatistics,
+					}, {
+						//房间统计
+						path: 'RoomStatistics',
+						component: RoomStatistics,
+					}, {
+						//会员统计
+						path: 'MembershipStatistics',
+						component: MembershipStatistics,
+					}, {
+						//会员统计
+						path: 'MembershipStatisticsDetails',
+						component: MembershipStatisticsDetails,
+					}
+				]
 			}]
 		}
 	]

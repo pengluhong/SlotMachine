@@ -13,8 +13,6 @@
 </template>
 
 <script>
-	import "@/assets/scripts/My97DatePicker/My97DatePicker/WdatePicker";
-
 	import SubHeader from "@/components/sub/header/header";
 	import Navigation from "@/components/sub/Navigation/Navigation";
 	export default {
@@ -43,6 +41,8 @@
 </script>
 
 <style>
+	@import 'bootstrap/dist/css/bootstrap.min.css';
+	@import 'element-ui/lib/theme-chalk/index.css';
 	@import '../../../assets/styles/reset';
 	@import '../../../assets/styles/styles';
 </style>

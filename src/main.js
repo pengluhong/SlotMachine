@@ -5,8 +5,10 @@ import App from './components/base/base'
 import router from './router'
 
 import $ from 'jquery'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min'
+import ElementUI from 'element-ui'
+
+Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 

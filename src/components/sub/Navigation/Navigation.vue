@@ -4,48 +4,35 @@
 			<ul>
 				<li>
 					<a href="javascript:;" class="bg-color">
-						会员管理
+						游戏控制台
 						<i class="glyphicon glyphicon-chevron-down pull-right"></i>
 					</a>
 					<ul>
 						<li>
-							<router-link to="/MemberInfor">会员信息查询</router-link>
+							<router-link to="/">全局配置</router-link>
 						</li>
 						<li>
-							<router-link to="/MemberCard">会员牌局查询</router-link>
+							<router-link to="/GameConfiguration">游戏配置</router-link>
 						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;" class="bg-color">
-						<span class="pull-left">游戏类型</span>
-						<i class="glyphicon glyphicon-chevron-down pull-right"></i>
-					</a>
-					<ul>
 						<li>
-							<router-link to="/GameDetails">游戏名称</router-link>
+							<router-link to="/AnnouncementConfiguration">公告推送配置</router-link>
 						</li>
 					</ul>
 				</li>
 				<li>
 					<a href="javascript:;" class="bg-color">
-						<span class="pull-left">控制台</span>
+						数据统计
 						<i class="glyphicon glyphicon-chevron-down pull-right"></i>
 					</a>
 					<ul>
 						<li>
-							<router-link to="/ProbabilityControl">概率游戏控制台</router-link>
+							<router-link to="/GlobalStatistics">全局统计</router-link>
 						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;" class="bg-color">
-						<span class="pull-left">公告</span>
-						<i class="glyphicon glyphicon-chevron-down pull-right"></i>
-					</a>
-					<ul>
 						<li>
-							<router-link to="/Notice">公告</router-link>
+							<router-link to="/RoomStatistics">房间统计</router-link>
+						</li>
+						<li>
+							<router-link to="/MembershipStatistics">会员统计</router-link>
 						</li>
 					</ul>
 				</li>
