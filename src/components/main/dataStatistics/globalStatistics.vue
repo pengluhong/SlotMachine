@@ -10,13 +10,13 @@
 			<div class="dis-inl-blk mgl10">
 				<p>起始日期</p>
 				<div class="mgt10">
-					<input type="text" class="form-control Wdate" placeholder="请选择起始日期" readonly>
+					<el-date-picker v-model="startDate" type="date" placeholder="请选择起始日期" :picker-options="pickerOptionsStart"></el-date-picker>
 				</div>
 			</div>
 			<div class="dis-inl-blk mgl10">
 				<p>结束日期</p>
 				<div class="mgt10">
-					<input type="text" class="form-control Wdate" placeholder="请选择截止日期" readonly>
+					<el-date-picker v-model="endDate" type="date" placeholder="请选择截止日期" :picker-options="pickerOptionsEnd"></el-date-picker>
 				</div>
 			</div>
 			<button class="btn btn-success mgl10 v-a-btm">查询</button>
@@ -136,3 +136,28 @@
 		</div>
 	</div>
 </template>
+<script>
+	export default {
+		data() {
+			return {
+				startDate: '',
+				endDate: '',
+				pickerOptionsStart: {
+					disabledDate: (time) => {
+						if(this.endDate != "") {
+							return time.getTime() > Date.now() || time.getTime() > this.endDate;
+						} else {
+							return time.getTime() > Date.now();
+						}
+
+					}
+				},
+				pickerOptionsEnd: {
+					disabledDate: (time) => {
+						return time.getTime() < this.startDate || time.getTime() > Date.now();
+					}
+				},
+			}
+		}
+	}
+</script>
