@@ -4,13 +4,13 @@
 			<div class="dis-inl-blk mgl10">
 				<p>代理商名称</p>
 				<div class="mgt10">
-					<input type="text" class="form-control" placeholder="请输入代理商名称">
+					<input type="text" class="form-control" placeholder="请输入代理商名称" v-model="agent_name">
 				</div>
 			</div>
 			<div class="dis-inl-blk mgl10">
 				<p>会员名称</p>
 				<div class="mgt10">
-					<input type="text" class="form-control" placeholder="请输入会员名称">
+					<input type="text" class="form-control" placeholder="请输入会员名称" v-model="player_name">
 				</div>
 			</div>
 			<div class="dis-inl-blk mgl10">
@@ -25,7 +25,7 @@
 					<el-date-picker v-model="endDate" type="date" placeholder="请选择截止日期" :picker-options="pickerOptionsEnd"></el-date-picker>
 				</div>
 			</div>
-			<button class="btn btn-success mgl10 v-a-btm">查询</button>
+			<button class="btn btn-success mgl10 v-a-btm" @click="_Search">查询</button>
 		</div>
 		<div class="pd30 clearfix">
 			<div class="table-responsive">
@@ -38,121 +38,60 @@
 							<th>玩局数</th>
 							<th>中奖次数</th>
 							<th>中奖率</th>
+							<th>免费拉霸</th>
 							<th>消耗金币</th>
 							<th>获得金币</th>
 							<th>回报率</th>
 							<th>操作</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td>2018/08/01 16:00</td>
-							<td>cctv</td>
-							<td>jay</td>
-							<td>16</td>
-							<td>11</td>
-							<td>60%</td>
-							<td>50</td>
-							<td>60</td>
-							<td>10%</td>
+					<tbody v-if="loadingList.length">
+						<tr v-for='item in loadingList'>
+							<td>{{item.created_at | formatDate}}</td>
+							<td>{{item.agent_name}}</td>
+							<td>{{item.player_name}}</td>
+							<td>{{item.game_number}}</td>
+							<td>{{item.win_number}}</td>
+							<td>{{item.win_rate}}%</td>
+							<td>{{item.free_slot}}</td>
+							<td>{{item.betting_amount}}</td>
+							<td>{{item.win_money}}</td>
+							<td>{{item.return_rate}}%</td>
 							<td>
-								<router-link to="/MembershipStatisticsDetails" class="btn btn-info">详细</router-link>
+								<button class="btn btn-info" @click="DetailedOperation(item.player_id)">详细</button>
 							</td>
 						</tr>
+					</tbody>
+					<tbody v-else>
 						<tr>
-							<td>2018/08/01 16:00</td>
-							<td>cctv</td>
-							<td>jay</td>
-							<td>16</td>
-							<td>11</td>
-							<td>60%</td>
-							<td>50</td>
-							<td>60</td>
-							<td>10%</td>
-							<td>
-								<router-link to="/MembershipStatisticsDetails" class="btn btn-info">详细</router-link>
-							</td>
-						</tr>
-						<tr>
-							<td>2018/08/01 16:00</td>
-							<td>cctv</td>
-							<td>jay</td>
-							<td>16</td>
-							<td>11</td>
-							<td>60%</td>
-							<td>50</td>
-							<td>60</td>
-							<td>10%</td>
-							<td>
-								<router-link to="/MembershipStatisticsDetails" class="btn btn-info">详细</router-link>
-							</td>
-						</tr>
-						<tr>
-							<td>2018/08/01 16:00</td>
-							<td>cctv</td>
-							<td>jay</td>
-							<td>16</td>
-							<td>11</td>
-							<td>60%</td>
-							<td>50</td>
-							<td>60</td>
-							<td>10%</td>
-							<td>
-								<router-link to="/MembershipStatisticsDetails" class="btn btn-info">详细</router-link>
-							</td>
-						</tr>
-						<tr>
-							<td>2018/08/01 16:00</td>
-							<td>cctv</td>
-							<td>jay</td>
-							<td>16</td>
-							<td>11</td>
-							<td>60%</td>
-							<td>50</td>
-							<td>60</td>
-							<td>10%</td>
-							<td>
-								<router-link to="/MembershipStatisticsDetails" class="btn btn-info">详细</router-link>
-							</td>
+							<td colspan="11">无数据</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 			<div class="txt-rt">
-				<ul class="pagination">
-					<li>
-						<a href="#">&laquo;</a>
-					</li>
-					<li class="active">
-						<a href="#">1</a>
-					</li>
-					<li class="disabled">
-						<a href="#">2</a>
-					</li>
-					<li>
-						<a href="#">3</a>
-					</li>
-					<li>
-						<a href="#">4</a>
-					</li>
-					<li>
-						<a href="#">5</a>
-					</li>
-					<li>
-						<a href="#">&raquo;</a>
-					</li>
-				</ul>
+				<!--分页-->
+				<paging-main :pageInfor="pageInfor" @getPagingCont="getPagingCont"></paging-main>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+	import AxiosService from "@/assets/scripts/api/axiosService";
+	import Urls from "@/assets/scripts/api/Urls";
+
+	import { TimeStamp, formatDate } from "@/assets/scripts/js/TimeStamp";
+	//分页
+	import PagingMain from "@/components/sub/pagingMain/pagingMain";
 	export default {
+		components: {
+			PagingMain
+		},
 		data() {
 			return {
+				//起始日期
 				startDate: '',
-				endDate: '',
 				pickerOptionsStart: {
 					disabledDate: (time) => {
 						if(this.endDate != "") {
@@ -163,11 +102,83 @@
 
 					}
 				},
+				//结束日期
+				endDate: '',
 				pickerOptionsEnd: {
 					disabledDate: (time) => {
 						return time.getTime() < this.startDate || time.getTime() > Date.now();
 					}
 				},
+				//初始加载列表
+				loadingList: '',
+				agent_name: '',
+				player_name: '',
+				//分页
+				pageInfor: {
+					//总列表内容
+					ListPage: [],
+					//总共多少条数据
+					Total: 0,
+					//每页显示多少条
+					pageSize: 10,
+				}
+			}
+		},
+		created() {
+			//加载初始化列表数据
+			this.getLoadingList();
+		},
+		methods: {
+			//获取分页信息
+			getPagingCont(msg) {
+				this.loadingList = msg;
+			},
+			getLoadingList() {
+				let Url = Urls.Url + Urls.MemberStatistics;
+				AxiosService.postRequest(Url).then((res) => {
+					if(res.code == 200) {
+						this.pageInfor.ListPage = res.data;
+						this.pageInfor.Total = res.data.length;
+						console.log(res.msg);
+					} else {
+						console.log(res.msg);
+					}
+				});
+			},
+			//查询
+			_Search() {
+				let dataObj = {
+					agent_name: this.agent_name,
+					player_name: this.player_name,
+					Start_time: TimeStamp(this.startDate),
+					End_time: TimeStamp(this.endDate)
+				}
+				const that = this;
+				let Url = Urls.Url + Urls.MemberStatistics;
+				AxiosService.postRequest(Url, dataObj).then((res) => {
+					if(res.code == 200) {
+						this.loadingList = res.data;
+						console.log(res.msg);
+					} else {
+						console.log(res);
+					}
+				});
+			},
+			//点击详细按钮
+			DetailedOperation(id) {
+				this.$router.push({
+					path: '/MembershipStatisticsDetails',
+					query: {
+						player_id: id
+					}
+				})
+			},
+		},
+		filters: {
+			formatDate(time) {
+				var date = new Date(parseInt(time) * 1000);
+				//return formatDate(date, 'yyyy-MM-dd hh:mm');
+				return formatDate(date, 'yyyy-MM-dd');
 			}
 		}
 	}

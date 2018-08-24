@@ -115,7 +115,7 @@ ol {
 /* 重置文本格式元素 */
 
 a,a:hover,a:active,a:link,a:visited {
-	text-decoration: none;
+	text-decoration: none !important;
 }
 
  {

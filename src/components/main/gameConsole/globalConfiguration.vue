@@ -4,7 +4,7 @@
 			<table class="table table-bordered">
 				<caption>
 					<h1 class="color-white dis-inl-blk">资金流分配设置</h1>
-					<button class="btn btn-default mgl15 shrink-btns">收起表格</button>
+					<button class="btn btn-default mgl15" v-if="ConfigsList.length" @click="c_bool=c_bool ? false:true" v-html="c_bool ? '打开表格':'收起表格'"></button>
 				</caption>
 				<thead>
 					<tr>
@@ -14,40 +14,49 @@
 						<th>操作</th>
 					</tr>
 				</thead>
-				<tbody>
-					<tr>
-						<td>5</td>
-						<td>5</td>
-						<td>90</td>
+				<tbody v-if="ConfigsList.length" v-show="!c_bool">
+					<tr v-for="item in ConfigsList">
 						<td>
-							<button class="btn btn-warning update-btns">修改</button>
+							<p v-show="!item.bool">{{item.scale_jackpot}}%</p>
+							<div v-show="item.bool">
+								<input type="text" class="form-control" v-model="item.scale_jackpot" />
+							</div>
+						</td>
+						<td>
+							<p v-show="!item.bool">{{item.scale_sys}}%</p>
+							<div v-show="item.bool">
+								<input type="text" class="form-control" v-model="item.scale_sys" />
+							</div>
+						</td>
+						<td>
+							<p v-show="!item.bool">{{item.scale_stock}}%</p>
+							<div v-show="item.bool">
+								<input type="text" class="form-control" v-model="item.scale_stock" />
+							</div>
+						</td>
+						<td>
+							<div v-show="!item.bool">
+								<button class="btn btn-warning" @click="item.bool=item.bool ? false:true">修改</button>
+							</div>
+							<div v-show="item.bool">
+								<button class="btn btn-success" @click="item.bool=item.bool ? false:true;AllocatioFundsUpdate()">确定</button>
+								<button class="btn btn-danger" @click="item.bool=item.bool ? false:true">取消</button>
+							</div>
 						</td>
 					</tr>
 				</tbody>
-				<tfoot style="display: none;">
+				<tbody v-else>
 					<tr>
-						<td>
-							<input type="text" class="form-control" value="5" />
-						</td>
-						<td>
-							<input type="text" class="form-control" value="5" />
-						</td>
-						<td>
-							<input type="text" class="form-control" value="5" />
-						</td>
-						<td>
-							<button class="btn btn-warning btn-success">确定</button>
-							<button class="btn btn-warning btn-danger">取消</button>
-						</td>
+						<td colspan="4">无数据</td>
 					</tr>
-				</tfoot>
+				</tbody>
 			</table>
 		</div>
 		<div class="table-responsive">
 			<table class="table table-bordered">
 				<caption>
 					<h1 class="color-white dis-inl-blk">房间设置</h1>
-					<button class="btn btn-default mgl15 shrink-btns">收起表格</button>
+					<button class="btn btn-default mgl15" v-if="RoomsList.length" @click="r_bool=r_bool ? false:true" v-html="r_bool ? '打开表格':'收起表格'"></button>
 				</caption>
 				<thead>
 					<tr>
@@ -56,118 +65,130 @@
 						<th>房间倍数</th>
 						<th>奖池临建值</th>
 						<th>奖池中奖概率</th>
-						<th>操作</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>room01</td>
-						<td>100</td>
-						<td>10</td>
-						<td>50K</td>
-						<td>0.05</td>
-						<td>
-							<button class="btn btn-warning update-btns">修改</button>
-						</td>
-					</tr>
-				</tbody>
-				<tfoot style="display: none;">
-					<tr>
-						<td>room01</td>
-						<td>
-							<input type="text" class="form-control" value="100" />
-						</td>
-						<td>10</td>
-						<td>
-							<input type="text" class="form-control" value="50K" />
-						</td>
-						<td>
-							<input type="text" class="form-control" value="0.05" />
-						</td>
-						<td>
-							<button class="btn btn-warning btn-success">确定</button>
-							<button class="btn btn-warning btn-danger">取消</button>
-						</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-		<div class="txt-rt">
-			<ul class="pagination">
-				<li>
-					<a href="#">&laquo;</a>
-				</li>
-				<li class="active">
-					<a href="#">1</a>
-				</li>
-				<li class="disabled">
-					<a href="#">2</a>
-				</li>
-				<li>
-					<a href="#">3</a>
-				</li>
-				<li>
-					<a href="#">4</a>
-				</li>
-				<li>
-					<a href="#">5</a>
-				</li>
-				<li>
-					<a href="#">&raquo;</a>
-				</li>
-			</ul>
-		</div>
-		<div class="table-responsive">
-			<table class="table table-bordered" style="width: 50% !important;">
-				<caption>
-					<h1 class="color-white dis-inl-blk">初始化设置</h1>
-					<button class="btn btn-default mgl15 shrink-btns">收起表格</button>
-				</caption>
-				<thead>
-					<tr>
+						<th>当前奖池金额</th>
 						<th>库存金额</th>
-						<th>奖池金额</th>
 						<th>操作</th>
 					</tr>
 				</thead>
-				<tbody>
-					<tr>
-						<td>50K</td>
-						<td>30K</td>
+				<tbody v-if="RoomsList.length" v-show="!r_bool">
+					<tr v-for="(item,index) in RoomsList">
+						<td>{{item.name}}</td>
 						<td>
-							<button class="btn btn-warning update-btns">修改</button>
+							<p v-show="!item.bool">{{item.datum}}</p>
+							<div v-show="item.bool">
+								<input type="text" class="form-control" v-model="item.datum" />
+							</div>
+						</td>
+						<td>{{item.multiple}}</td>
+						<td>
+							<p v-show="!item.bool">{{item.scale_jackpot}}</p>
+							<div v-show="item.bool">
+								<input type="text" class="form-control" v-model="item.scale_jackpot" />
+							</div>
+						</td>
+						<td>
+							<p v-show="!item.bool">{{item.chance_jackpot}}‰</p>
+							<div v-show="item.bool">
+								<input type="text" class="form-control" v-model="item.chance_jackpot" />
+							</div>
+						</td>
+						<td>
+							<p v-show="!item.bool">{{item.local_jackpot}}</p>
+							<div v-show="item.bool">
+								<input type="text" class="form-control" v-model="item.local_jackpot" />
+							</div>
+						</td>
+						<td>
+							<p v-show="!item.bool">{{item.inventory}}</p>
+							<div v-show="item.bool">
+								<input type="text" class="form-control" v-model="item.inventory" />
+							</div>
+						</td>
+						<td>
+							<div v-show="!item.bool">
+								<button class="btn btn-warning" @click="item.bool=item.bool ? false:true;_RoomUpdate(item)">修改</button>
+							</div>
+							<div v-show="item.bool">
+								<button class="btn btn-success" @click="item.bool=item.bool ? false:true;RoomSettingUpdate()">确定</button>
+								<button class="btn btn-danger" @click="item.bool=item.bool ? false:true">取消</button>
+							</div>
 						</td>
 					</tr>
 				</tbody>
-				<tfoot style="display: none;">
+				<tbody v-else>
 					<tr>
-						<td>
-							<input type="text" class="form-control" value="50K" />
-						</td>
-						<td>
-							<input type="text" class="form-control" value="5K" />
-						</td>
-						<td>
-							<button class="btn btn-warning btn-success">确定</button>
-							<button class="btn btn-warning btn-danger">取消</button>
-						</td>
+						<td colspan="8">无数据</td>
 					</tr>
-				</tfoot>
+				</tbody>
 			</table>
 		</div>
 	</div>
 </template>
 
 <script>
-	import { shrinkTable } from '@/assets/scripts/js/shrinkTable';
+	import AxiosService from "@/assets/scripts/api/axiosService";
+	import Urls from "@/assets/scripts/api/Urls";
 	export default {
-		mounted() {
-			$('.update-btns').click(function() {
-				/*前端展示效果，引入数据操作时删除改动作*/
-				$(this).parent().parent().parent().siblings('tfoot').show();
-			});
-			//收放表格
-			shrinkTable('.shrink-btns');
+		data() {
+			return {
+				//资金流分配设置列表
+				ConfigsList: [],
+				c_bool: false,
+				//房间设置列表
+				RoomsList: [],
+				r_bool: false,
+				RoomData: null,
+			}
+		},
+		created() {
+			//加载初始化列表数据
+			this.getLoadingList();
+		},
+		methods: {
+			getLoadingList() {
+				let Url = Urls.Url + Urls.GlobalConfiguration;
+				AxiosService.getRequest(Url).then((res) => {
+					if(res.code == 200) {
+						this.ConfigsList = res.configs;
+						this.c_bool = this.ConfigsList.bool;
+						this.RoomsList = res.rooms;
+						this.r_bool = this.RoomsList.bool;
+						console.log(res.msg);
+					} else {
+						console.log(res.msg);
+					}
+				});
+			},
+			//资金流分配设置修改
+			AllocatioFundsUpdate() {
+				let Url = Urls.Url + Urls.fundUpdate;
+				let dataObj = this.ConfigsList[0];
+				console.log(dataObj);
+				AxiosService.postRequest(Url, dataObj).then((res) => {
+					if(res.code == 1) {
+						console.log(res.msg);
+					} else {
+						console.log(res.msg);
+					}
+				});
+			},
+			//点击房间设置修改按钮
+			_RoomUpdate(data) {
+				this.RoomData = data;
+			},
+			//房间设置修改
+			RoomSettingUpdate() {
+				let Url = Urls.Url + Urls.roomUpdate;
+				let dataObj = this.RoomData;
+				console.log(dataObj);
+				AxiosService.postRequest(Url, dataObj).then((res) => {
+					if(res.code == 1) {
+						console.log(res.msg);
+					} else {
+						console.log(res.msg);
+					}
+				});
+			}
 		}
 	}
 </script>

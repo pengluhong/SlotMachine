@@ -24,6 +24,7 @@
 			//计算导航以及内容区域高度
 			let h;
 			_h();
+
 			function _h() {
 				h = $(window).height();
 				$('.nav-main').height(h - 70); //70为头部高度
@@ -35,7 +36,7 @@
 			$(window).resize(function() {
 				_h();
 			});
-		}
+		},
 	}
 </script>
 
