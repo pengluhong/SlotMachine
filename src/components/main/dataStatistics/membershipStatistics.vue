@@ -82,6 +82,7 @@
 	import Urls from "@/assets/scripts/api/Urls";
 
 	import { TimeStamp, formatDate } from "@/assets/scripts/js/TimeStamp";
+	import Utils from "@/assets/scripts/js/utils";
 	//分页
 	import PagingMain from "@/components/sub/pagingMain/pagingMain";
 	export default {
@@ -150,14 +151,15 @@
 				let dataObj = {
 					agent_name: this.agent_name,
 					player_name: this.player_name,
-					Start_time: TimeStamp(this.startDate),
-					End_time: TimeStamp(this.endDate)
+					start_time: TimeStamp(this.startDate),
+					end_time: TimeStamp(this.endDate)
 				}
 				const that = this;
 				let Url = Urls.Url + Urls.MemberStatistics;
 				AxiosService.postRequest(Url, dataObj).then((res) => {
 					if(res.code == 200) {
-						this.loadingList = res.data;
+						this.pageInfor.ListPage = res.data;
+						this.pageInfor.Total = res.data.length;
 						console.log(res.msg);
 					} else {
 						console.log(res);
@@ -166,15 +168,19 @@
 			},
 			//点击详细按钮
 			DetailedOperation(id) {
+				localStorage.clear();
+				let dataObj = {
+					player_id: id
+				};
 				this.$router.push({
 					path: '/MembershipStatisticsDetails',
 					query: {
-						player_id: id
+						data: Utils.Encrypt(dataObj)
 					}
-				})
+				});
 			},
 		},
-		filters: {
+		filters: { //时间戳转换为日期
 			formatDate(time) {
 				var date = new Date(parseInt(time) * 1000);
 				//return formatDate(date, 'yyyy-MM-dd hh:mm');

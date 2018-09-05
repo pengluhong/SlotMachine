@@ -4,7 +4,7 @@
 			<table class="table table-bordered">
 				<caption>
 					<h1 class="color-white dis-inl-blk">资金流分配设置</h1>
-					<button class="btn btn-default mgl15" v-if="ConfigsList.length" @click="c_bool=c_bool ? false:true" v-html="c_bool ? '打开表格':'收起表格'"></button>
+					<button class="btn btn-default btn-xs mgl10" v-if="ConfigsList.length" @click="c_bool=c_bool ? false:true" v-html="c_bool ? '打开表格':'收起表格'"></button>
 				</caption>
 				<thead>
 					<tr>
@@ -56,7 +56,7 @@
 			<table class="table table-bordered">
 				<caption>
 					<h1 class="color-white dis-inl-blk">房间设置</h1>
-					<button class="btn btn-default mgl15" v-if="RoomsList.length" @click="r_bool=r_bool ? false:true" v-html="r_bool ? '打开表格':'收起表格'"></button>
+					<button class="btn btn-default btn-xs mgl10" v-if="RoomsList.length" @click="r_bool=r_bool ? false:true" v-html="r_bool ? '打开表格':'收起表格'"></button>
 				</caption>
 				<thead>
 					<tr>

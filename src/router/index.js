@@ -13,7 +13,15 @@ import AnnouncementConfiguration from '@/components/main/gameConsole/announcemen
 import GlobalStatistics from '@/components/main/dataStatistics/globalStatistics';
 import RoomStatistics from '@/components/main/dataStatistics/roomStatistics';
 import MembershipStatistics from '@/components/main/dataStatistics/membershipStatistics';
-import MembershipStatisticsDetails from '@/components/main/dataStatistics/membershipStatisticsDetails';
+import MembershipStatisticsDetails from '@/components/main/dataStatistics/memberShipStatisticsDetails';
+import RoleManagement from '@/components/main/systemManagement/roleManagement';
+import PersonnelManagement from '@/components/main/systemManagement/personnelManagement';
+import UserEditor from '@/components/main/systemManagement/UserEditor';
+import AgencyManagement from '@/components/main/agent/agencyManagement';
+import NewMembers from '@/components/main/systemManagement/newMembers';
+import NewRole from '@/components/main/systemManagement/newRole';
+import ModifyMembers from '@/components/main/systemManagement/modifyMembers';
+import HistoricalRecords from '@/components/main/systemManagement/historicalRecords';
 
 Vue.use(Router)
 
@@ -60,9 +68,41 @@ export default new Router({
 						path: 'MembershipStatistics',
 						component: MembershipStatistics,
 					}, {
-						//会员统计
+						//会员统计详情
 						path: 'MembershipStatisticsDetails',
 						component: MembershipStatisticsDetails,
+					}, {
+						//角色管理列表
+						path: 'RoleManagement',
+						component: RoleManagement,
+					}, {
+						//后台人员管理列表
+						path: 'PersonnelManagement',
+						component: PersonnelManagement,
+					}, {
+						//代理管理
+						path: 'AgencyManagement',
+						component: AgencyManagement,
+					}, {
+						//角色和后台人员资料查看以及编辑
+						path: 'UserEditor',
+						component: UserEditor,
+					}, {
+						//新增人员
+						path: 'NewMembers',
+						component: NewMembers,
+					}, {
+						//新增角色
+						path: 'NewRole',
+						component: NewRole,
+					}, {
+						//修改人员资料
+						path: 'ModifyMembers',
+						component: ModifyMembers,
+					}, {
+						//检视历史操作记录
+						path: 'HistoricalRecords',
+						component: HistoricalRecords,
 					}
 				]
 			}]

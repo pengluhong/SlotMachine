@@ -5,11 +5,11 @@
 				<table class="table table-bordered">
 					<caption>
 						<h1 class="color-white dis-inl-blk">配置{{index+1}}</h1>
-						<button class="btn btn-default mgl15" @click="item.bool=item.bool ? false:true" v-html="item.bool ? '打开表格':'收起表格'"></button>
+						<button class="btn btn-default btn-xs mgl10" @click="item.bool=item.bool ? false:true" v-html="item.bool ? '打开表格':'收起表格'"></button>
 					</caption>
 				</table>
 				<div class="clearfix gcTableList">
-					<table class="table table-bordered pull-left" style="width: 20% !important;" v-for="items in item.elements">
+					<table class="table table-bordered pull-left" style="width: 19% !important;" v-for="(items,index) in item.elements" :style="index==0 ? 'margin-left:0' : 'margin-left:1%'">
 						<thead>
 							<tr>
 								<th>第{{items.column}}列</th>

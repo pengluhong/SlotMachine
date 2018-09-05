@@ -6,9 +6,16 @@ import router from './router'
 
 import $ from 'jquery'
 import 'bootstrap/dist/js/bootstrap.min'
-import ElementUI from 'element-ui'
 
+import ElementUI from 'element-ui'
 Vue.use(ElementUI)
+//复制、粘贴
+import VueClipboard from 'vue-clipboard2'
+VueClipboard.config.autoSetContainer = true
+Vue.use(VueClipboard)
+
+import htmlToPdf from '@/assets/scripts/js/htmlToPdf'
+Vue.use(htmlToPdf)
 
 Vue.config.productionTip = false
 

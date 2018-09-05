@@ -16,12 +16,6 @@
 		props: {
 			pageInfor: {}
 		},
-		created() {
-			const that = this;
-			setTimeout(function() {
-				that.pageTurning(that.currentPage);
-			}, 100);
-		},
 		methods: {
 			setPagingCont() {
 				this.$emit('getPagingCont', this.CurrentPage);
@@ -50,28 +44,39 @@
 				let t = this.pageInfor.Total;
 				let p = this.pageInfor.pageSize;
 				let r = t % p;
-				if(r > 0) {
-					if(val == (t - r) / p + 1) {
-						for(let i = (val - 1) * p; i < (val - 1) * p + r; i++) {
-							cp.push(lp[i - 1, i]);
+				if(t > 0) {
+					if(r > 0) {
+						if(val == (t - r) / p + 1) {
+							for(let i = (val - 1) * p; i < (val - 1) * p + r; i++) {
+								cp.push(lp[i - 1, i]);
+							}
+						} else {
+							for(let i = (val - 1) * p; i < val * p; i++) {
+								cp.push(lp[i - 1, i]);
+							}
 						}
 					} else {
 						for(let i = (val - 1) * p; i < val * p; i++) {
 							cp.push(lp[i - 1, i]);
 						}
 					}
-				} else {
-					for(let i = (val - 1) * p; i < val * p; i++) {
-						cp.push(lp[i - 1, i]);
-					}
 				}
-
 			}
 		},
 		watch: {
 			CurrentPage() {
 				this.setPagingCont();
+			},
+			pageInfor: {　　　　
+				handler(newValue, oldValue) {
+					const that = this;　　　　　　　　　
+					setTimeout(function() {
+						that.pageTurning(that.currentPage);
+					}, 100);
+				},
+				deep: true　　
 			}
+
 		}
 	}
 </script>

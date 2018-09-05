@@ -1,5 +1,24 @@
 export default {
 	Url: 'http://192.168.201.198:8080',
+
+	/*最高代理模块*/
+	//代理管理初始化请求
+	ProxyIndex: '/proxy/index',
+	//新增代理
+	ProxyAdd: '/proxy/add',
+	//修改代理
+	ProxyEdit: '/proxy/edit',
+	ProxyEditAdd: '/proxy/editAdd',
+	//财务查看权限
+	ProxyAllowFinance: '/proxy/allowFinance',
+	//修改代理状态
+	ProxyStatus: '/proxy/status',
+	//更改密钥状态
+	ProxyKeyStatus: '/proxy/keyStatus',
+	//重新产出金钥
+	ProxyRebuildSign: '/proxy/rebuildSign',
+	/*end*/
+
 	/*游戏控制台模块*/
 	//全局配置
 	GlobalConfiguration: '/game/global',
@@ -10,9 +29,9 @@ export default {
 	//游戏配置
 	GameConfiguration: '/game/config',
 	//配置元素权重设置 + 美酒和全盘奖设置(修改)
-	WeightEdit:'/game/edit',
+	WeightEdit: '/game/edit',
 	//计算回报率
-	GameRoce:'/game/roce',
+	GameRoce: '/game/roce',
 	//公告推送配置
 	Notice: '/game/notice',
 	//新增公告

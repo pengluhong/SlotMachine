@@ -49,6 +49,31 @@ body {
 	margin-top: 15px;
 }
 
+.mgt20 {
+	margin-top: 20px;
+}
+
+.mgt30 {
+	margin-top: 30px;
+}
+
+.mgt60 {
+	margin-top: 60px;
+}
+
+.mgb0 {
+	margin-bottom: 0 !important;
+}
+
+.mgb10 {
+	margin-bottom: 10px !important;
+}
+
+
+.mgl5 {
+	margin-left: 5px !important;
+}
+
 .mgl10 {
 	margin-left: 10px;
 }
@@ -57,8 +82,25 @@ body {
 	margin-left: 15px;
 }
 
+.mgl20 {
+	margin-left: 20px;
+}
+
+.pdl0 {
+	padding-left: 0 !important;
+}
+
+.pdlr0 {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
 .pd15 {
 	padding: 15px;
+}
+
+.pd20 {
+	padding: 20px;
 }
 
 .pd30 {
@@ -99,6 +141,10 @@ body {
 
 .cursor-pointer {
 	cursor: pointer;
+}
+
+textarea {
+	resize: none;
 }
 
 
@@ -178,7 +224,7 @@ body {
 .nav-main {
 	width: 260px;
 	height: 100%;
-	position: fixed;
+	position: fixed !important;
 	left: 0;
 	top: 70px;
 	z-index: 8;
@@ -214,3 +260,64 @@ body {
 	padding: 20px;
 	padding-top: 90px;
 }
+
+
+/*list*/
+
+.details-lists li {
+	list-style-type: disc;
+	list-style-position: inside;
+	padding: 15px 0;
+}
+
+
+/*自定义滚动条CSS*/
+
+.preferential_scroll_box {
+	padding: 0px;
+	position: relative;
+	overflow: hidden;
+}
+
+.preferential_scroll_box .preferential_list {
+	height: auto;
+}
+
+.ps-container .ps-scrollbar-y-rail {
+	position: absolute;
+	right: 0;
+	/*width: 2px;
+	background: #4a4a4b;*/
+}
+
+.ps-container .ps-scrollbar-y {
+	position: absolute;
+	right: 0;
+	/*width: 2px;
+	background-color: #a1a1a1;*/
+}
+
+.ps-container.ie6 .ps-scrollbar-y {
+	font-size: 0;
+}
+
+.ps-container .ps-scrollbar-x-rail {
+	position: absolute;
+	bottom: 0;
+	/*height: 2px;
+	background: #4a4a4b;*/
+}
+
+.ps-container .ps-scrollbar-x {
+	position: absolute;
+	bottom: 0;
+	/*height: 2px;
+	background-color: #a1a1a1;*/
+}
+
+.ps-container.ie6 .ps-scrollbar-x {
+	font-size: 0;
+}
+
+
+/*自定义滚动条CSS*/

@@ -60,7 +60,9 @@
 									<table class="table table-bordered">
 										<tbody>
 											<tr v-for="item in GameResults">
-												<td v-for="items in item.list">{{items}}</td>
+												<td v-for="items in item.list">
+													<img :src="'/static/images/numbers/'+items+'.png'" />
+												</td>
 											</tr>
 										</tbody>
 									</table>
@@ -82,6 +84,7 @@
 <script>
 	import AxiosService from "@/assets/scripts/api/axiosService";
 	import Urls from "@/assets/scripts/api/Urls";
+	import Utils from "@/assets/scripts/js/utils";
 	//分页
 	import PagingMain from "@/components/sub/pagingMain/pagingMain";
 	export default {
@@ -92,13 +95,7 @@
 			return {
 				loadingList: [],
 				//游戏结果
-				GameResults: [{
-					list: []
-				}, {
-					list: []
-				}, {
-					list: []
-				}],
+				GameResults: [],
 				//分页
 				pageInfor: {
 					//总列表内容
@@ -121,9 +118,10 @@
 			},
 			//列表初始化
 			_LoadingList() {
+				let Obj = Utils.Decrypt(this.$route.query.data);
 				let Url = Urls.Url + Urls.MemberInfor;
 				let dataObj = {
-					player_id: this.$route.query.player_id
+					player_id: Obj.player_id
 				}
 				AxiosService.postRequest(Url, dataObj).then((res) => {
 					if(res.code == 200) {
@@ -137,19 +135,20 @@
 			},
 			//查看游戏结果
 			_SeeGameResults(cards) {
-				this.GameResults = [{
+				let List = [{
 					list: []
 				}, {
 					list: []
 				}, {
 					list: []
 				}];
-				for(let i = 0; i < this.GameResults.length; i++) {
+				for(let i = 0; i < List.length; i++) {
 					let z = (i + 1) * 5;
 					for(let j = z - 5; j < z; j++) {
-						this.GameResults[i].list.push(cards[j]);
+						List[i].list.push(cards[j]);
 					}
 				}
+				this.GameResults = List;
 			}
 		}
 	}

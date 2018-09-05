@@ -131,10 +131,11 @@
 			_Search() {
 				let dataObj = {
 					agent_name: this.agent_name,
-					Start_time: TimeStamp(this.startDate),
-					End_time: TimeStamp(this.endDate)
+					start_time: TimeStamp(this.startDate),
+					end_time: TimeStamp(this.endDate)
 				}
 				const that = this;
+				console.log(dataObj);
 				let Url = Urls.Url + Urls.AgentStatistics;
 				AxiosService.postRequest(Url, dataObj).then((res) => {
 					if(res.code == 200) {

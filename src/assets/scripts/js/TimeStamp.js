@@ -1,5 +1,8 @@
 //日期转换成时间戳
 export function TimeStamp(times) {
+	if(times === '') {
+		return '';
+	}
 	return Math.floor(new Date(times).getTime() / 1000)
 }
 

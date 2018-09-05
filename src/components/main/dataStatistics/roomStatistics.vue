@@ -142,8 +142,8 @@
 			_Search() {
 				let dataObj = {
 					room_name: this.room_name,
-					Start_time: TimeStamp(this.startDate),
-					End_time: TimeStamp(this.endDate)
+					start_time: TimeStamp(this.startDate),
+					end_time: TimeStamp(this.endDate)
 				}
 				const that = this;
 				let Url = Urls.Url + Urls.RoomStatistics;
