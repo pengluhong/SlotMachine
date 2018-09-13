@@ -5,7 +5,7 @@
 			<div class="dis-inl-blk mgl10">
 				<p>代理账号</p>
 				<div class="mgt10">
-					<input type="text" class="form-control" placeholder="请输入代理账号" v-model="agent_account">
+					<input type="text" class="form-control" placeholder="请输入代理账号" v-model="agent_name">
 				</div>
 			</div>
 			<button class="btn btn-success mgl10 v-a-btm" @click="SearchAgent">搜索</button>
@@ -27,7 +27,7 @@
 					<tbody>
 						<tr v-for="(item,index) in loadingList">
 							<td>{{item.id}}</td>
-							<td>{{item.agent_account}}</td>
+							<td>{{item.agent_name}}</td>
 							<td>{{item.code}}</td>
 							<td>
 								<span :class="item.status==0? 'text-danger':'text-success'" v-html="item.status==0? '停用':'启用'"></span>
@@ -66,11 +66,11 @@
 							<el-form-item label="代理编号" prop="id" v-if="AgentForm.id">
 								<el-input v-model="AgentForm.id" :disabled="true"></el-input>
 							</el-form-item>
-							<el-form-item label="代理账号" prop="agent_account">
-								<el-input v-model="AgentForm.agent_account" placeholder="可使用英文字母或数字4-12位" :disabled="AgentForm.id ? true :false"></el-input>
+							<el-form-item label="代理账号" prop="agent_name">
+								<el-input v-model="AgentForm.agent_name" placeholder="可使用英文字母或数字4-12位" :disabled="AgentForm.id ? true :false"></el-input>
 							</el-form-item>
-							<el-form-item label="代理名称" prop="agent_name">
-								<el-input v-model="AgentForm.agent_name" placeholder="可使用英文字母、数字、中文最多12位"></el-input>
+							<el-form-item label="代理名称" prop="nick_name">
+								<el-input v-model="AgentForm.nick_name" placeholder="可使用英文字母、数字、中文最多12位"></el-input>
 							</el-form-item>
 							<el-form-item label="密码" prop="agent_password" v-if="!AgentForm.id">
 								<el-col :span="13">
@@ -92,26 +92,12 @@
 							<el-form-item label="电子邮件" prop="email">
 								<el-input v-model="AgentForm.email" placeholder="请输入您的电子邮箱"></el-input>
 							</el-form-item>
-							<el-form-item label="财务查看权限" class="mgb0">
-								<div class="el-input" style="position: relative;">
-									<input type="text" class="el-input__inner" placeholder="清空搜索内容关闭下拉" v-model="AllowFinance" @keyup="ViewPermissionsResult" />
-									<!--搜索下拉框-->
-									<div v-if="FinancialAuthority.length" class="el-autocomplete-suggestion el-popper" style="transform-origin: center top 0px; z-index: 2177; width: 100%; position: absolute; top: 40px; left: 0;" x-placement="bottom-start">
-										<div class="el-scrollbar">
-											<div class="el-autocomplete-suggestion__wrap el-scrollbar__wrap" style="margin-bottom: -17px; margin-right: -17px;">
-												<ul class="el-scrollbar__view el-autocomplete-suggestion__list">
-													<li class="txt-lf" v-for="item in FinancialAuthority" @click="AddViewPermissions(item)">{{item}}</li>
-												</ul>
-											</div>
-										</div>
-										<div x-arrow="" class="popper__arrow" style="left: 35px;"></div>
-									</div>
-									<!--搜索下拉框 end-->
-								</div>
+							<el-form-item label="财务查看权限">
+								<el-col :span="20">
+									<el-input placeholder="请选择代理权限" v-model="AllowFinance" readonly></el-input>
+								</el-col>
+								<el-button type="primary" style="margin-left: 8px;" data-toggle="modal" data-target="#am-SelectAgent">选择</el-button>
 							</el-form-item>
-							<div class="txt-lf" style="padding-left: 100px;">
-								<el-tag size="small" closable v-for="item in AgentForm.allow_finance" @close="CloseViewPermissions(item)" style="margin-bottom: 4px;">{{item}}</el-tag>
-							</div>
 						</div>
 						<div class="modal-footer">
 							<el-form-item class="mgb0">
@@ -123,6 +109,54 @@
 				</div>
 			</div>
 		</div>
+		<!--二次确认新增、修改代理 -->
+		<div class="modal fade bg-Again" id="am-NewAgentAgain" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">提示</h4>
+					</div>
+					<div class="modal-body">
+						<p class="mgt10" v-if="AgentForm.id">确定修改代理资料？</p>
+						<p class="mgt10" v-else>确定新增代理资料？</p>
+					</div>
+					<div class="modal-footer">
+						<el-button type="primary" @click="_NewAgentAgain">确定</el-button>
+						<el-button data-dismiss="modal">取消</el-button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
+		</div>
+		<!--选择代理权限 -->
+		<div class="modal fade bg-Again" id="am-SelectAgent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">选择代理</h4>
+					</div>
+					<div class="modal-body">
+						<el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+						<div class="mgt15">
+							<el-checkbox-group v-model="AgentForm.allow_finance" @change="handleCheckedCitiesChange">
+								<el-checkbox v-for="item in FinancialAuthority" :label="item.agent_name" :key="item.agent_name">
+									<em>{{item.agent_name}}({{item.code}})</em>
+								</el-checkbox>
+							</el-checkbox-group>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<el-button type="primary" data-dismiss="modal" @click="AddViewPermissions">确定</el-button>
+						<el-button data-dismiss="modal">取消</el-button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
+		</div>
 		<!--状态修改 -->
 		<div class="modal fade" id="am-StateOperation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -130,11 +164,11 @@
 					<el-form :model="StateForm" :rules="StateRules" ref="StateForm" label-width="0">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-							<h4 class="modal-title" id="myModalLabel">启用/停用最高代理</h4>
+							<h4 class="modal-title">启用/停用最高代理</h4>
 						</div>
 						<div class="modal-body txt-ct">
 							<p class="mgt10">您即将将
-								<b class="text-primary">{{CurrentItem.agent_account}}</b> 的状态设定为
+								<b class="text-primary">{{CurrentItem.agent_name}}</b> 的状态设定为
 								<span :class="CurrentItem.status!=0? 'text-danger':'text-success'" v-html="CurrentItem.status!=0? '停用':'启用'"></span></p>
 							<p class="mgt10">确认完毕，请在下方輸入您的使用者密码</p>
 							<div class="form-group" style="width: 50% !important; margin: 20px auto;">
@@ -161,7 +195,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="myModalLabel">金钥管理（所属代理： <b class="text-primary">{{CurrentItem.agent_account}}</b>）</h4>
+						<h4 class="modal-title" id="myModalLabel">金钥管理（所属代理： <b class="text-primary">{{CurrentItem.agent_name}}</b>）</h4>
 					</div>
 					<div class="modal-body">
 						<div>
@@ -174,7 +208,7 @@
 						</div>
 						<div class="form-group mgt30">
 							<label for="name">金钥状态：<span :class="CurrentItem.key_status==0? 'text-danger':'text-success'" v-html="CurrentItem.key_status==0? '停用':'启用'"></span></label>
-							<button class="btn mgl10" :class="CurrentItem.key_status!=0? 'btn-danger':'btn-success'" v-html="CurrentItem.key_status!=0? '禁用':'启用'" @click="EmptyPassword()"  data-toggle="modal" data-target="#am-EncryptKeyStateOperation"></button>
+							<button class="btn mgl10" :class="CurrentItem.key_status!=0? 'btn-danger':'btn-success'" v-html="CurrentItem.key_status!=0? '禁用':'启用'" @click="EmptyPassword()" data-toggle="modal" data-target="#am-EncryptKeyStateOperation"></button>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -196,7 +230,7 @@
 						</div>
 						<div class="modal-body txt-ct">
 							<p class="mgt10">您即将<span :class="CurrentItem.key_status!=0? 'text-danger':'text-success'" v-html="CurrentItem.key_status!=0? '停用':'启用'"></span>
-								<b class="text-primary">{{CurrentItem.agent_account}}</b> 的金钥
+								<b class="text-primary">{{CurrentItem.agent_name}}</b> 的金钥
 							</p>
 							<p class="mgt10">确认完毕，请在下方輸入您的使用者密码</p>
 							<div class="form-group" style="width: 50% !important; margin: 20px auto;">
@@ -263,14 +297,14 @@
 			return {
 				loadingList: [],
 				//代理账号
-				agent_account: '',
+				agent_name: '',
 				//当前代理信息
 				CurrentItem: [],
 				CurrentIndex: null,
 				//新增代理
 				AgentForm: {
-					agent_account: '',
 					agent_name: '',
+					nick_name: '',
 					agent_password: '',
 					code: '',
 					profix: '86',
@@ -279,12 +313,12 @@
 					allow_finance: [],
 				},
 				AgentFormRules: {
-					agent_account: [{
+					agent_name: [{
 						required: true,
 						message: '代理账号不能为空',
 						trigger: 'blur'
 					}],
-					agent_name: [{
+					nick_name: [{
 						required: true,
 						message: '代理名称不能为空',
 						trigger: 'blur'
@@ -320,7 +354,10 @@
 				}],
 				//财务查看权限
 				AllowFinance: '',
+				checkAll: false,
 				FinancialAuthority: [],
+				FinancialAuthoritys: [],
+				isIndeterminate: true,
 				StateForm: {
 					//使用者密码
 					UserPassword: '',
@@ -356,6 +393,7 @@
 			},
 			//页面初始化
 			_Loading() {
+				//列表信息
 				let Url = Urls.Url + Urls.ProxyIndex;
 				AxiosService.postRequest(Url).then((res) => {
 					if(res.code == 200) {
@@ -366,12 +404,25 @@
 						console.log(res);
 					}
 				});
+
+				//权限
+				let Url2 = Urls.Url + Urls.ProxyAllowFinance;
+				AxiosService.postRequest(Url2).then((res) => {
+					if(res.code == 200) {
+						this.FinancialAuthority = res.data;
+						for(let i = 0; i < this.FinancialAuthority.length; i++) {
+							this.FinancialAuthoritys.push(this.FinancialAuthority[i].agent_name);
+						}
+					} else {
+						console.log(res);
+					}
+				});
 			},
 			//代理账号搜索
 			SearchAgent() {
 				let Url = Urls.Url + Urls.ProxyIndex;
 				let dataObj = {
-					agent_account: this.agent_account
+					agent_name: this.agent_name
 				}
 				AxiosService.postRequest(Url, dataObj).then((res) => {
 					if(res.code == 200) {
@@ -383,11 +434,11 @@
 					}
 				});
 			},
-			//点击新增
+			//点击新增按钮
 			ClickAddAgent() {
 				//清空因编辑填入的数据
 				this.AgentForm = {
-					agent_account: '',
+					agent_name: '',
 					agent_name: '',
 					agent_password: '',
 					code: '',
@@ -396,34 +447,13 @@
 					email: '',
 					allow_finance: [],
 				}
+				this.AllowFinance = '';
 			},
-			//新增代理
+			//新增、修改代理
 			_NewAgent(formName) {
-				let Url;
-				let dataObj = this.AgentForm;
-				if(dataObj.id) {
-					//修改
-					Url = Urls.Url + Urls.ProxyEditAdd;
-				} else {
-					//新增
-					Url = Urls.Url + Urls.ProxyAdd;
-				}
-				console.log(dataObj);
 				this.$refs[formName].validate((valid) => {
 					if(valid) {
-						AxiosService.postRequest(Url, dataObj).then((res) => {
-							if(res.code == 200) {
-								$('#am-NewAgent').modal('hide')
-								this.$message({
-									message: res.msg,
-									type: 'success'
-								});
-								//新增成功，更新列表
-								this._Loading();
-							} else {
-								this.$message.error(res.msg);
-							}
-						});
+						$('#am-NewAgentAgain').modal('show');
 					} else {
 						return false;
 					}
@@ -431,6 +461,34 @@
 			},
 			_NewAgentRest(formName) {
 				this.$refs[formName].resetFields();
+			},
+			//二次确认新增、修改代理
+			_NewAgentAgain() {
+				let Url;
+				let dataObj = this.AgentForm;
+				console.log(dataObj);
+				if(dataObj.id) {
+					//修改
+					Url = Urls.Url + Urls.ProxyEditAdd;
+				} else {
+					//新增
+					Url = Urls.Url + Urls.ProxyAdd;
+				}
+				AxiosService.postRequest(Url, dataObj).then((res) => {
+					if(res.code == 200) {
+						$('#am-NewAgent').modal('hide');
+						$('#am-NewAgentAgain').modal('hide');
+						this.$message({
+							message: res.msg,
+							type: 'success'
+						});
+						//新增成功，更新列表
+						this._Loading();
+					} else {
+						$('#am-NewAgentAgain').modal('hide');
+						this.$message.error(res.msg);
+					}
+				});
 			},
 			GeneratingCipher() {
 				//生成6位数密码
@@ -448,32 +506,39 @@
 			onError(e) {
 				this.$message.error('复制失败！');
 			},
-			//财务查看权限搜索
-			ViewPermissionsResult() {
-				let Url = Urls.Url + Urls.ProxyAllowFinance;
-				let dataObj = {
-					agent_account: this.AllowFinance,
-				}
-				AxiosService.postRequest(Url, dataObj).then((res) => {
-					if(res.code == 200) {
-						this.FinancialAuthority = res.data;
-					} else {
-						this.FinancialAuthority = [];
-					}
-				});
-			},
-			//增加权限
-			AddViewPermissions(obj) {
-				for(let i = 0; i < this.AgentForm.allow_finance.length; i++) {
-					if(obj == this.AgentForm.allow_finance[i]) {
-						return;
+			//显示增加权限
+			AddViewPermissions() {
+				let datas = this.FinancialAuthority;
+				let objs = this.AgentForm.allow_finance;
+				let arrs = [];
+				for(let i = 0; i < objs.length; i++) {
+					for(let j = 0; j < datas.length; j++) {
+						if(objs[i] == datas[j].agent_name) {
+							arrs.push(datas[j].agent_name + '(' + datas[j].code + ')');
+						}
 					}
 				}
-				this.AgentForm.allow_finance.push(obj);
+				this.AllowFinance = arrs.toString();
 			},
-			//删除被增加的权限
-			CloseViewPermissions(obj) {
-				this.AgentForm.allow_finance.splice(this.AgentForm.allow_finance.indexOf(obj), 1);
+			//选择权限
+			handleCheckAllChange(val) {
+				this.AgentForm.allow_finance = val ? this.FinancialAuthoritys : [];
+				this.isIndeterminate = false;
+			},
+			handleCheckedCitiesChange(value) {
+				let checkedCount = value.length;
+				this.checkAll = checkedCount === this.FinancialAuthority.length;
+				this.isIndeterminate = checkedCount > 0 && checkedCount < this.FinancialAuthority.length;
+			},
+			//因element全选组件无法选择多维数组，所以只能转换为一维数组
+			_AllowSinance() {
+				let a_f = this.AgentForm.allow_finance;
+				if(a_f.length) {
+					this.AgentForm.allow_finance = [];
+					for(let i = 0; i < a_f.length; i++) {
+						this.AgentForm.allow_finance.push(a_f[i].agent_name);
+					}
+				}
 			},
 			//点击修改编辑按钮
 			_ModifyBtn(id) {
@@ -483,8 +548,10 @@
 				}
 				AxiosService.postRequest(Url, dataObj).then((res) => {
 					if(res.code == 200) {
-						console.log(res.msg);
 						$.extend(this.AgentForm, res.data);
+						this._AllowSinance();
+						//展示权限
+						this.AddViewPermissions();
 					} else {
 						console.log(res);
 					}
@@ -593,7 +660,7 @@
 				this.CurrentItem = item;
 				this.CurrentIndex = index;
 			},
-			EmptyPassword(){
+			EmptyPassword() {
 				this.StateForm.UserPassword = '';
 			}
 		},
@@ -617,5 +684,9 @@
 	
 	.input-with-select .el-input-group__prepend {
 		background-color: #fff;
+	}
+	
+	#am-SelectAgent .el-checkbox {
+		margin-left: 10px !important;
 	}
 </style>

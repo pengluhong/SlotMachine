@@ -4,6 +4,8 @@ import Router from 'vue-router'
 import BaseLayout from '@/components/base/baseLayout';
 import NotFoundComponent from '@/components/base/notFound';
 import MainLayout from '@/components/main/layout/mainLayout';
+
+import Login from '@/components/main/login/Login';
 import Index from '@/components/main/index/index';
 
 import GlobalConfiguration from '@/components/main/gameConsole/globalConfiguration';
@@ -16,16 +18,11 @@ import MembershipStatistics from '@/components/main/dataStatistics/membershipSta
 import MembershipStatisticsDetails from '@/components/main/dataStatistics/memberShipStatisticsDetails';
 import RoleManagement from '@/components/main/systemManagement/roleManagement';
 import PersonnelManagement from '@/components/main/systemManagement/personnelManagement';
-import UserEditor from '@/components/main/systemManagement/UserEditor';
 import AgencyManagement from '@/components/main/agent/agencyManagement';
-import NewMembers from '@/components/main/systemManagement/newMembers';
-import NewRole from '@/components/main/systemManagement/newRole';
-import ModifyMembers from '@/components/main/systemManagement/modifyMembers';
-import HistoricalRecords from '@/components/main/systemManagement/historicalRecords';
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
 	mode: 'history',
 	linkExactActiveClass: 'current',
 	routes: [{
@@ -39,10 +36,11 @@ export default new Router({
 			children: [{
 				path: '',
 				component: MainLayout,
-				children: [ //{
-					//path: '',
-					//component: Index,
-					//},
+				children: [
+					/*{
+											path: 'Index',
+											component: Index,
+										},*/
 					{
 						//全局配置
 						path: '',
@@ -83,29 +81,41 @@ export default new Router({
 						//代理管理
 						path: 'AgencyManagement',
 						component: AgencyManagement,
-					}, {
-						//角色和后台人员资料查看以及编辑
-						path: 'UserEditor',
-						component: UserEditor,
-					}, {
-						//新增人员
-						path: 'NewMembers',
-						component: NewMembers,
-					}, {
-						//新增角色
-						path: 'NewRole',
-						component: NewRole,
-					}, {
-						//修改人员资料
-						path: 'ModifyMembers',
-						component: ModifyMembers,
-					}, {
-						//检视历史操作记录
-						path: 'HistoricalRecords',
-						component: HistoricalRecords,
-					}
+					},
 				]
-			}]
+			}, {
+				//登录
+				path: 'Login',
+				component: Login,
+			}, ]
 		}
 	]
-})
+});
+
+/*//路由前检查
+router.beforeEach(async(to, from, next) => {
+	//延长登录时间，防止登出
+	localStorage.setItem('logoutTime', new Date().getTime() + (15 * 60 * 1000));
+	//计算登出时间，时间到就登出
+	if(localStorage.getItem('LoginTime') < new Date().getTime()) {
+		//移除相关资料
+		localStorage.removeItem('LoginAccount');
+		localStorage.removeItem('LoginCode');
+		localStorage.removeItem('LoginTime');
+	}
+	//判断是否登录
+	if(localStorage.getItem('LoginCode') != 1) {
+		//未登录直接跳转到登录页
+		if(to.path !== '/Login') {
+			router.replace('Login');
+		}
+	} else {
+		//已登录的情况再去登录页，跳转至首页
+		if(to.path === '/Login') {
+			router.replace('/');
+		}
+	}
+	next();
+});*/
+
+export default router;

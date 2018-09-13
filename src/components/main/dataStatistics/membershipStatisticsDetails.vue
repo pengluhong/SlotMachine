@@ -36,7 +36,7 @@
 							<td>{{item.free_slot}}</td>
 							<td>{{item.is_free}}</td>
 							<td>
-								<button class="btn btn-info" data-toggle="modal" data-target="#ResultList" @click="_SeeGameResults(item.cards)">查看</button>
+								<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#ResultList" @click="_SeeGameResults(item.cards)">查看</button>
 							</td>
 						</tr>
 					</tbody>

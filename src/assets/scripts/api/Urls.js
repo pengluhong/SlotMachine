@@ -1,6 +1,13 @@
 export default {
 	Url: 'http://192.168.201.198:8080',
 
+	//验证码
+	AdminCaptcha: '/admin/captcha',
+	//登录
+	AdminLogin: '/admin/login',
+	//获取菜单
+	GameIndex: '/game/index',
+
 	/*最高代理模块*/
 	//代理管理初始化请求
 	ProxyIndex: '/proxy/index',
@@ -46,6 +53,28 @@ export default {
 	//会员统计
 	MemberStatistics: '/MemberStatistics/index',
 	//会员详情
-	MemberInfor: '/MemberStatistics/information'
+	MemberInfor: '/MemberStatistics/information',
+	/*end*/
+
+	/*系统管理模块*/
+	//角色管理列表
+	GameRole: '/game/role',
+	//权限列表
+	GameMenus:'/game/menus',
+	GameRoleDetail:'/game/roleDetail',
+	//新增、编辑角色管理列表
+	GameRoleEdit: '/game/roleEdit',
+	//角色管理状态修改
+	GameRoleStatus: '/game/roleStatus',
+	//删除角色
+	GameRoleDel: '/game/roleDel',
+	//后台人员管理列表
+	GameUser: '/game/user',
+	//新增、编辑后台人员管理列表
+	GameUserAdd: '/game/userAdd',
+	//后台人员管理状态修改
+	GameAdminStatus: '/game/adminStatus',
+	//删除后台人员
+	GameAdminDel: '/game/adminDel',
 	/*end*/
 }

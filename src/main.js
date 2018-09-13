@@ -3,7 +3,6 @@
 import Vue from 'vue'
 import App from './components/base/base'
 import router from './router'
-
 import $ from 'jquery'
 import 'bootstrap/dist/js/bootstrap.min'
 

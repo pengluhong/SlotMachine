@@ -58,7 +58,7 @@
 							<td>{{item.win_money}}</td>
 							<td>{{item.return_rate}}%</td>
 							<td>
-								<button class="btn btn-info" @click="DetailedOperation(item.player_id)">详细</button>
+								<button class="btn btn-info btn-sm" @click="DetailedOperation(item.player_id)">详细</button>
 							</td>
 						</tr>
 					</tbody>
@@ -126,6 +126,13 @@
 			}
 		},
 		created() {
+			let q_data = this.$route.query.data;
+			if(q_data) {
+				//如果由会员统计页进入该页面
+				this.agent_name = Utils.Decrypt(q_data).agent_name;
+				this._Search();
+				return;
+			}
 			//加载初始化列表数据
 			this.getLoadingList();
 		},
@@ -162,13 +169,12 @@
 						this.pageInfor.Total = res.data.length;
 						console.log(res.msg);
 					} else {
-						console.log(res);
+						console.log(res.msg);
 					}
 				});
 			},
 			//点击详细按钮
 			DetailedOperation(id) {
-				localStorage.clear();
 				let dataObj = {
 					player_id: id
 				};
@@ -185,6 +191,13 @@
 				var date = new Date(parseInt(time) * 1000);
 				//return formatDate(date, 'yyyy-MM-dd hh:mm');
 				return formatDate(date, 'yyyy-MM-dd');
+			}
+		},
+		watch: {
+			$route() {
+				this.agent_name = '';
+				//重新加载初始化列表数据
+				this.getLoadingList();
 			}
 		}
 	}

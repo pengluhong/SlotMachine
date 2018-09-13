@@ -1,17 +1,29 @@
 <template>
 	<div>
 		<div class="bg-color pd30 clearfix">
-			<div class="pull-left">
-				<router-link to="/NewMembers" class="btn btn-success">新增管理人员</router-link>
-				<button class="btn btn-default" data-toggle="modal" data-target="#pm_Search">搜索</button>
+			<button class="btn btn-success v-a-btm" data-toggle="modal" data-target="#pm_NewPersonnel" @click="_NewButton">新增管理人员</button>
+			<div class="dis-inl-blk mgl10">
+				<p>账号</p>
+				<div class="mgt10">
+					<el-input v-model="Search.account" placeholder="可输入多个，请以半形逗号隔开"></el-input>
+				</div>
 			</div>
-			<div class="pull-right">
-				<el-radio-group v-model="satte" size="medium">
-					<el-radio-button label="全部"></el-radio-button>
-					<el-radio-button label="启用中"></el-radio-button>
-					<el-radio-button label="停用中"></el-radio-button>
-				</el-radio-group>
+			<div class="dis-inl-blk">
+				<p>姓名</p>
+				<div class="mgt10">
+					<el-input v-model="Search.realname" placeholder="例:周杰伦，可输入多个,请以半形逗号隔开"></el-input>
+				</div>
 			</div>
+			<div class="dis-inl-blk">
+				<p>角色</p>
+				<div class="mgt10">
+					<el-select v-model="Search.role_id" placeholder="请选择角色">
+						<el-option v-for="item in RoleList" :key="item.id" :label="item.name" :value="item.id">
+						</el-option>
+					</el-select>
+				</div>
+			</div>
+			<button class="btn btn-success v-a-btm" @click="_Search">搜索</button>
 		</div>
 		<div class="pd30 clearfix">
 			<div class="table-responsive">
@@ -20,65 +32,174 @@
 						<tr>
 							<th>序号</th>
 							<th>账号</th>
-							<th>状态</th>
 							<th>姓名</th>
 							<th>角色</th>
 							<th>手机号码</th>
+							<th>状态</th>
+							<th>操作</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody v-if="loadingList.length">
+						<tr v-for="item in loadingList">
+							<td>{{item.id}}</td>
+							<td>{{item.account}}</td>
+							<td>{{item.realname}}</td>
+							<td>{{item.role_name}}</td>
+							<td>{{item.phone}}</td>
+							<td>
+								<span :class="item.status==0? 'text-danger':'text-success'" v-html="item.status==0? '停用':'启用'"></span>
+							</td>
+							<td>
+								<button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#pm-StateOperation" @click="_StateButton(item)" v-if="item.status!=0">停用</button>
+								<button class="btn btn-success btn-sm" data-toggle="modal" data-target="#pm-StateOperation" @click="_StateButton(item)" v-else>启用</button>
+								<button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#pm_NewPersonnel" @click="_ModifyPersonnel(item)">编辑</button>
+								<button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#pm-StateOperation" @click="_DeletePersonnel(item)">删除</button>
+							</td>
+						</tr>
+					</tbody>
+					<tbody v-else>
 						<tr>
-							<td>1</td>
-							<td>
-								<router-link to="/UserEditor" class="text-success">G1234</router-link>
-							</td>
-							<td>
-								<router-link to="/UserEditor" class="label label-success">启用</router-link>
-							</td>
-							<td>
-								<router-link to="/UserEditor" class="text-success">德玛西亚</router-link>
-							</td>
-							<td>
-								<router-link to="/UserEditor" class="text-success">超级</router-link>
-							</td>
-							<td>13800000000</td>
+							<td colspan="7">无数据</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
+			<div class="txt-rt">
+				<paging-main :pageInfor="pageInfor" @getPagingCont="getPagingCont"></paging-main>
+			</div>
 		</div>
-		<!--搜索 -->
-		<div class="modal fade" id="pm_Search" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<!--新增、修改管理人员-->
+		<div class="modal fade" id="pm_NewPersonnel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width: 1000px;">
+				<div class="modal-content">
+					<el-form :model="PersonnelForm" :rules="rulesPersonnelForm" ref="PersonnelForm" label-width="100px">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title" v-if="!PersonnelForm.id">新增管理人员</h4>
+							<h4 class="modal-title" v-else>编辑管理人员</h4>
+						</div>
+						<div class="modal-body">
+							<div class="alert alert-warning" v-if="!PersonnelForm.id">
+								<strong>新增注意事项！</strong>登入密码预设为123456
+							</div>
+							<div class="clearfix">
+								<div class="col-lg-6">
+									<div class="page-header" style="margin-top: 0 !important;">
+										<h1>基本资料（必填）</h1>
+									</div>
+									<el-form-item label="账号" prop="account">
+										<el-input placeholder="例：g123456" v-model="PersonnelForm.account" :disabled="PersonnelForm.id ? true:false"></el-input>
+									</el-form-item>
+									<el-form-item label="姓名" prop="realname">
+										<el-input placeholder="例：周杰伦" v-model="PersonnelForm.realname"></el-input>
+									</el-form-item>
+									<el-form-item label="手机号码" prop="phone">
+										<el-input placeholder="例：15800000000" v-model="PersonnelForm.phone"></el-input>
+									</el-form-item>
+									<el-form-item label="角色" prop="role_id">
+										<el-select placeholder="请选择角色" style="width:100%" v-model="PersonnelForm.role_id">
+											<el-option v-for="item in RoleList" :value="item.id" :label="item.name"></el-option>
+										</el-select>
+									</el-form-item>
+								</div>
+								<div class="col-lg-6">
+									<div class="page-header" style="margin-top: 0 !important;">
+										<h1>选填资料</h1>
+									</div>
+									<el-form-item label="性别">
+										<el-radio-group v-model="PersonnelForm.sex">
+											<el-radio v-for="item in SexArr" :label="item.label">{{item.value}}</el-radio>
+										</el-radio-group>
+									</el-form-item>
+									<el-form-item label="Email">
+										<el-input placeholder="例：163@freer.com" v-model="PersonnelForm.email"></el-input>
+									</el-form-item>
+									<el-form-item label="生日">
+										<el-date-picker type="date" placeholder="例：1900-07-09" v-model="PersonnelForm.birth" style="width: 100%;"></el-date-picker>
+									</el-form-item>
+									<el-form-item label="微信号">
+										<el-input placeholder="例：wechar123" v-model="PersonnelForm.wechat"></el-input>
+									</el-form-item>
+									<el-form-item label="QQ">
+										<el-input placeholder="例：123456789" v-model="PersonnelForm.qq"></el-input>
+									</el-form-item>
+								</div>
+							</div>
+							<div class="clearfix">
+								<div class="col-lg-6">
+									<div class="page-header" style="margin-top: 0 !important;">
+										<h1>备注</h1>
+									</div>
+									<el-form-item label="备注">
+										<el-col>
+											<el-input type="textarea" v-model="PersonnelForm.remark"></el-input>
+										</el-col>
+									</el-form-item>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<el-button type="primary" :plain="true" @click="_NewPersonnel('PersonnelForm')">确认</el-button>
+							<el-button data-dismiss="modal" @click="_NewPersonnelRest('PersonnelForm')">关闭</el-button>
+						</div>
+					</el-form>
+				</div>
+			</div>
+		</div>
+		<!--新增、修改二次确认弹窗-->
+		<div class="modal fade bg-Again" id="pm_AgainNewPersonnel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="myModalLabel">搜索后台人员</h4>
-					</div>
-					<div class="modal-body">
-						<div class="form-group">
-							<label for="name">账号</label>
-							<input type="text" class="form-control" id="name" placeholder="可输入多个，请以半形逗号隔开">
+					<el-form label-width="0">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title">提示</h4>
 						</div>
-						<div class="form-group">
-							<label for="name">姓名</label>
-							<input type="text" class="form-control" id="name" placeholder="例:周杰伦，可输入多个,请以半形逗号隔开">
+						<div class="modal-body">
+							<p v-if="!PersonnelForm.id">确认新增管理人员？</p>
+							<p v-else>确认修改管理人员？</p>
 						</div>
-						<div class="form-group">
-							<label for="name">角色</label>
-							<select class="form-control">
-								<option>请选择角色</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-							</select>
+						<div class="modal-footer">
+							<el-form-item class="mgb0">
+								<el-button type="primary" :plain="true" @click="AgainNewPersonnel">确认</el-button>
+								<el-button data-dismiss="modal">关闭</el-button>
+							</el-form-item>
 						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-						<button type="button" class="btn btn-primary" data-dismiss="modal">搜索</button>
-					</div>
+					</el-form>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
+		</div>
+		<!--状态修改以及删除 -->
+		<div class="modal fade" id="pm-StateOperation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<el-form :model="UserPasswordForm" :rules="UserPasswordRules" ref="UserPasswordForm" label-width="0">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title" v-if="OperationCont==1">修改状态</h4>
+							<h4 class="modal-title" v-else>删除管理人员</h4>
+						</div>
+						<div class="modal-body txt-ct">
+							<p class="mgt10" v-if="OperationCont==1">您即将将
+								<b class="text-primary">{{CurrentItem.account}}</b> 的状态设定为
+								<span :class="CurrentItem.status!=0? 'text-danger':'text-success'" v-html="CurrentItem.status!=0? '停用':'启用'"></span></p>
+							<p class="mgt10" v-else>您即将删除该人员</p>
+							<p class="mgt10">确认完毕，请在下方輸入您的使用者密码</p>
+							<div class="form-group" style="width: 50% !important; margin: 20px auto;">
+								<el-form-item prop="UserPassword">
+									<el-input type="password" v-model="UserPasswordForm.UserPassword"></el-input>
+								</el-form-item>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<el-form-item class="mgb0">
+								<el-button type="primary" :plain="true" @click="_Operation('UserPasswordForm')">确认</el-button>
+								<el-button data-dismiss="modal" @click="_OperationRest('UserPasswordForm')">关闭</el-button>
+							</el-form-item>
+						</div>
+					</el-form>
 				</div>
 				<!-- /.modal-content -->
 			</div>
@@ -88,12 +209,270 @@
 </template>
 
 <script>
+	import AxiosService from "@/assets/scripts/api/axiosService";
+	import Urls from "@/assets/scripts/api/Urls";
+	//分页
+	import PagingMain from "@/components/sub/pagingMain/pagingMain";
 	export default {
 		data() {
 			return {
-				satte: ''
+				loadingList: [],
+				RoleList: [],
+				//搜索
+				Search: {
+					account: '',
+					realname: '',
+					role_id: '',
+				},
+				//当前人员信息
+				CurrentItem: [],
+				UserPasswordForm: {
+					//使用者密码
+					UserPassword: '',
+				},
+				UserPasswordRules: {
+					UserPassword: [{
+						required: true,
+						message: '密码不能为空',
+						trigger: 'blur'
+					}]
+				},
+				PersonnelForm: {
+					//用户名（账号）
+					account: '',
+					//姓名
+					realname: '',
+					//手机号码
+					phone: '',
+					//角色
+					role_id: null,
+					//性别
+					sex: '1',
+					//email
+					email: '',
+					//生日
+					birth: '',
+					//微信
+					wechat: '',
+					//QQ
+					qq: '',
+					//备注
+					remark: ''
+				},
+				rulesPersonnelForm: {
+					account: [{
+						required: true,
+						message: '账号不能为空',
+						trigger: 'blur'
+					}],
+					realname: [{
+						required: true,
+						message: '姓名不能为空',
+						trigger: 'blur'
+					}],
+					phone: [{
+						required: true,
+						message: '手机号不能为空',
+						trigger: 'blur'
+					}],
+					role_id: [{
+						required: true,
+						message: '请选择角色',
+						trigger: 'change'
+					}],
+				},
+				SexArr: [{
+					value: '男',
+					label: '1',
+				}, {
+					value: '女',
+					label: '2'
+				}],
+				//判断是修改状态还是删除操作,1为状态修改，0为删除
+				OperationCont: null,
+				//分页
+				pageInfor: {
+					//总列表内容
+					ListPage: [],
+					//总共多少条数据
+					Total: 0,
+					//每页显示多少条
+					pageSize: 10,
+				},
 			};
-		}
+		},
+		created() {
+			this._LoadingList();
+		},
+		methods: {
+			//获取分页信息
+			getPagingCont(msg) {
+				this.loadingList = msg;
+			},
+			//页面初始化加载
+			_LoadingList() {
+				let Url = Urls.Url + Urls.GameUser;
+				AxiosService.getRequest(Url).then((res) => {
+					if(res.code == 200) {
+						this.pageInfor.ListPage = res.users;
+						this.pageInfor.Total = res.users.length;
+					} else {
+						console.log(res);
+					}
+				});
+
+				//加载角色
+				let RoleUrl = Urls.Url + Urls.GameRole;
+				AxiosService.getRequest(RoleUrl).then((res) => {
+					if(res.code == 200) {
+						this.RoleList = res.roles;
+					} else {
+						console.log(res);
+					}
+				});
+			},
+			//搜索
+			_Search() {
+				let Url = Urls.Url + Urls.GameUser;
+				let dataObj = this.Search;
+				console.log(dataObj);
+				AxiosService.postRequest(Url, dataObj).then((res) => {
+					if(res.code == 200) {
+						this.pageInfor.ListPage = res.users;
+						this.pageInfor.Total = res.users.length;
+					} else {
+						console.log(res);
+					}
+				});
+			},
+			//点击新增按钮
+			_NewButton() {
+				//清空因编辑填入的数据
+				this.PersonnelForm = {
+					//用户名（账号）
+					account: '',
+					//姓名
+					realname: '',
+					//手机号码
+					phone: '',
+					//角色
+					role_id: null,
+					//性别
+					sex: '1',
+					//email
+					email: '',
+					//生日
+					birth: '',
+					//微信
+					wechat: '',
+					//QQ
+					qq: '',
+					//备注
+					remark: ''
+				}
+			},
+			//点击新增确认按钮
+			_NewPersonnel(formName) {
+				this.$refs[formName].validate((valid) => {
+					if(valid) {
+						$('#pm_AgainNewPersonnel').modal('show');
+					} else {
+						return false;
+					}
+				});
+			},
+			//点击关闭按钮
+			_NewPersonnelRest(formName) {
+				this.$refs[formName].resetFields();
+			},
+			//点击修改编辑按钮
+			_ModifyPersonnel(formName) {
+				$.extend(this.PersonnelForm, formName);
+			},
+			//二次确认新增管理人员
+			AgainNewPersonnel() {
+				let Url = Urls.Url + Urls.GameUserAdd;
+				if(this.PersonnelForm.id) {
+					delete this.PersonnelForm.account;
+				}
+				let dataObj = this.PersonnelForm;
+				AxiosService.postRequest(Url, dataObj).then((res) => {
+					if(res.code == 1) {
+						$('#pm_NewPersonnel').modal('hide');
+						$('#pm_AgainNewPersonnel').modal('hide');
+						this.$message({
+							message: res.msg,
+							type: 'success'
+						});
+						//新增、修改成功，更新列表
+						this._LoadingList();
+					} else {
+						$('#pm_AgainNewPersonnel').modal('hide');
+						this.$message.error(res.msg);
+					}
+				});
+			},
+			//点击修改状态按钮
+			_StateButton(item) {
+				this.CurrentItem = item;
+				this.OperationCont = 1;
+				//清空密码
+				this.UserPasswordForm.UserPassword = '';
+			},
+			//点击删除按钮
+			_DeletePersonnel(item) {
+				this.CurrentItem = item;
+				this.OperationCont = 0;
+				//清空密码
+				this.UserPasswordForm.UserPassword = '';
+			},
+			//状态修改以及删除操作
+			_Operation(formName) {
+				let Url = Urls.Url,
+					dataObj = null;
+				if(this.OperationCont === 1) {
+					//状态修改
+					Url = Url + Urls.GameAdminStatus;
+					dataObj = {
+						id: this.CurrentItem.id,
+						status: this.CurrentItem.status,
+						password: this.UserPasswordForm.UserPassword,
+					}
+				} else {
+					//删除
+					Url = Url + Urls.GameAdminDel;
+					dataObj = {
+						id: this.CurrentItem.id,
+						password: this.UserPasswordForm.UserPassword,
+					}
+				}
+				this.$refs[formName].validate((valid) => {
+					if(valid) {
+						AxiosService.postRequest(Url, dataObj).then((res) => {
+							if(res.code == 1) {
+								$('#pm-StateOperation').modal('hide');
+								this.$message({
+									message: res.msg,
+									type: 'success'
+								});
+								//修改成功，更新列表
+								this._LoadingList();
+							} else {
+								this.$message.error(res.msg);
+							}
+						});
+					} else {
+						return false;
+					}
+				});
+			},
+			_OperationRest(formName) {
+				this.$refs[formName].resetFields();
+			},
+		},
+		components: {
+			PagingMain
+		},
 	}
 </script>
 

@@ -31,8 +31,8 @@
 										<button class="btn btn-warning btn-xs" v-if="!itemss.bool" @click="itemss.bool=true;_WeightModification(items.id,index)">修改</button>
 									</div>
 									<div v-if="itemss.bool">
-										<button class="btn btn-xs btn-success" id="sbs+index" @click="itemss.bool=false;WeightModification(itemss.element)">确定</button>
-										<button class="btn btn-xs btn-danger" @click="itemss.bool=false">取消</button>
+										<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#gc-WeightUpdate" @click="_DetermineButton(index,itemss.element)">确定</button>
+										<button class="btn btn-xs btn-danger" @click="getLoadingList">取消</button>
 									</div>
 								</td>
 							</tr>
@@ -61,8 +61,8 @@
 									<button class="btn btn-warning btn-xs" @click="Arr.bool=Arr.bool ? false:true;_settingClick(Arr.key)">修改</button>
 								</div>
 								<div v-show="Arr.bool">
-									<button class="btn btn-xs btn-success" @click="Arr.bool=Arr.bool ? false:true;WeightModification(Arr.value)">确定</button>
-									<button class="btn btn-xs btn-danger" @click="Arr.bool=Arr.bool ? false:true">取消</button>
+									<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#gc-WeightUpdate" @click="_DetermineButton(index,Arr.value)">确定</button>
+									<button class="btn btn-xs btn-danger" @click="getLoadingList">取消</button>
 								</div>
 							</td>
 						</tr>
@@ -73,6 +73,26 @@
 					<b v-if="CoreType==item.type">：{{Core}}</b>
 				</div>
 			</div>
+		</div>
+		<!--权重修改确认弹窗-->
+		<div class="modal fade" id="gc-WeightUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">提示</h4>
+					</div>
+					<div class="modal-body">
+						<p>是否确认修改？</p>
+					</div>
+					<div class="modal-footer">
+						<el-button type="primary" :plain="true" data-dismiss="modal" @click="WeightModification(CurrentData)">确认</el-button>
+						<el-button data-dismiss="modal" @click="getLoadingList">取消</el-button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
 		</div>
 	</div>
 </template>
@@ -94,7 +114,10 @@
 				overall_white: null,
 				//回报率
 				Core: '',
-				CoreType: ''
+				CoreType: '',
+				//修改之前获取当前项的信息
+				Current:null,
+				CurrentData:null,
 			}
 		},
 		created() {
@@ -120,10 +143,15 @@
 				this.weightIndex = index + 1;
 				this._type = 1;
 			},
-			//点击修公用设置
+			//点击修改公用设置
 			_settingClick(k) {
 				this.overall_white = k;
 				this._type = 2;
+			},
+			//点击修改确定按钮
+			_DetermineButton(index,item) {
+				this.Current = index;
+				this.CurrentData = item;
 			},
 			//修改配置元素权重设置 + 美酒和全盘奖设置
 			WeightModification(val) {
@@ -147,9 +175,12 @@
 				AxiosService.postRequest(Url, dataObj).then((res) => {
 					if(res.code == 1) {
 						this.getLoadingList();
-						console.log(res.msg);
+						this.$message({
+							message: '修改成功！',
+							type: 'success'
+						});
 					} else {
-						console.log(res.msg);
+						this.$message.error(res.msg);
 					}
 				});
 			},

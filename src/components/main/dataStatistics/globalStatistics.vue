@@ -40,7 +40,9 @@
 					<tbody v-if="loadingList.length">
 						<tr v-for="item in loadingList">
 							<!--<td>2018/08/01 16:00</td>-->
-							<td>{{item.agent_name}}</td>
+							<td>
+								<a href="javascript:;" class="text-success" @click="_AgentName(item.agent_name)">{{item.agent_name}}</a>
+							</td>
 							<td>{{item.betting_amount}}</td>
 							<td>{{item.recovery_amount}}</td>
 							<td>{{item.jackpot_amount}}</td>
@@ -70,6 +72,7 @@
 	import { TimeStamp } from "@/assets/scripts/js/TimeStamp";
 	//分页
 	import PagingMain from "@/components/sub/pagingMain/pagingMain";
+	import Utils from "@/assets/scripts/js/utils";
 	export default {
 		components: {
 			PagingMain
@@ -144,6 +147,17 @@
 						console.log(res.msg);
 					} else {
 						console.log(res);
+					}
+				});
+			},
+			_AgentName(name) {
+				let dataObj = {
+					agent_name: name
+				};
+				this.$router.push({
+					path:'/MembershipStatistics',
+					query: {
+						data: Utils.Encrypt(dataObj)
 					}
 				});
 			},

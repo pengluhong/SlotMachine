@@ -15,7 +15,7 @@
 					</tr>
 				</thead>
 				<tbody v-if="ConfigsList.length" v-show="!c_bool">
-					<tr v-for="item in ConfigsList">
+					<tr v-for="(item,index) in ConfigsList">
 						<td>
 							<p v-show="!item.bool">{{item.scale_jackpot}}%</p>
 							<div v-show="item.bool">
@@ -36,11 +36,11 @@
 						</td>
 						<td>
 							<div v-show="!item.bool">
-								<button class="btn btn-warning" @click="item.bool=item.bool ? false:true">修改</button>
+								<button class="btn btn-warning btn-sm" @click="item.bool=true">修改</button>
 							</div>
 							<div v-show="item.bool">
-								<button class="btn btn-success" @click="item.bool=item.bool ? false:true;AllocatioFundsUpdate()">确定</button>
-								<button class="btn btn-danger" @click="item.bool=item.bool ? false:true">取消</button>
+								<button class="btn btn-success btn-sm" data-toggle="modal" data-target="#gc-AllocatioFundsUpdate" @click="_DetermineButton(index)">确定</button>
+								<button class="btn btn-danger btn-sm" @click="item.bool=false">取消</button>
 							</div>
 						</td>
 					</tr>
@@ -106,11 +106,11 @@
 						</td>
 						<td>
 							<div v-show="!item.bool">
-								<button class="btn btn-warning" @click="item.bool=item.bool ? false:true;_RoomUpdate(item)">修改</button>
+								<button class="btn btn-warning btn-sm" @click="item.bool=true;_RoomUpdate(item)">修改</button>
 							</div>
 							<div v-show="item.bool">
-								<button class="btn btn-success" @click="item.bool=item.bool ? false:true;RoomSettingUpdate()">确定</button>
-								<button class="btn btn-danger" @click="item.bool=item.bool ? false:true">取消</button>
+								<button class="btn btn-success btn-sm" data-toggle="modal" data-target="#gc-RoomSettingUpdate" @click="_DetermineButton(index)">确定</button>
+								<button class="btn btn-danger btn-sm" @click="getLoadingList">取消</button>
 							</div>
 						</td>
 					</tr>
@@ -121,6 +121,46 @@
 					</tr>
 				</tbody>
 			</table>
+		</div>
+		<!--资金流分配设置修改确认弹窗-->
+		<div class="modal fade" id="gc-AllocatioFundsUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">提示</h4>
+					</div>
+					<div class="modal-body">
+						<p>是否确认修改？</p>
+					</div>
+					<div class="modal-footer">
+						<el-button type="primary" :plain="true" data-dismiss="modal" @click="ConfigsList[Current].bool=false;AllocatioFundsUpdate()">确认</el-button>
+						<el-button data-dismiss="modal" @click="getLoadingList">取消</el-button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
+		</div>
+		<!--房间设置修改确认弹窗-->
+		<div class="modal fade" id="gc-RoomSettingUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">提示</h4>
+					</div>
+					<div class="modal-body">
+						<p>是否确认修改？</p>
+					</div>
+					<div class="modal-footer">
+						<el-button type="primary" :plain="true" data-dismiss="modal" @click="RoomsList[Current].bool=false;RoomSettingUpdate()">确认</el-button>
+						<el-button data-dismiss="modal" @click="getLoadingList">取消</el-button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
 		</div>
 	</div>
 </template>
@@ -138,6 +178,7 @@
 				RoomsList: [],
 				r_bool: false,
 				RoomData: null,
+				Current: null,
 			}
 		},
 		created() {
@@ -145,6 +186,7 @@
 			this.getLoadingList();
 		},
 		methods: {
+			//初始化列表信息
 			getLoadingList() {
 				let Url = Urls.Url + Urls.GlobalConfiguration;
 				AxiosService.getRequest(Url).then((res) => {
@@ -159,16 +201,24 @@
 					}
 				});
 			},
+			//点击资金流分配设置和房间设置确定按钮
+			_DetermineButton(index) {
+				this.Current = index;
+			},
 			//资金流分配设置修改
 			AllocatioFundsUpdate() {
 				let Url = Urls.Url + Urls.fundUpdate;
 				let dataObj = this.ConfigsList[0];
 				console.log(dataObj);
 				AxiosService.postRequest(Url, dataObj).then((res) => {
+					this.getLoadingList();
 					if(res.code == 1) {
-						console.log(res.msg);
+						this.$message({
+							message: '修改成功！',
+							type: 'success'
+						});
 					} else {
-						console.log(res.msg);
+						this.$message.error(res.msg);
 					}
 				});
 			},
@@ -182,10 +232,14 @@
 				let dataObj = this.RoomData;
 				console.log(dataObj);
 				AxiosService.postRequest(Url, dataObj).then((res) => {
+					this.getLoadingList();
 					if(res.code == 1) {
-						console.log(res.msg);
+						this.$message({
+							message: '修改成功！',
+							type: 'success'
+						});
 					} else {
-						console.log(res.msg);
+						this.$message.error(res.msg);
 					}
 				});
 			}
