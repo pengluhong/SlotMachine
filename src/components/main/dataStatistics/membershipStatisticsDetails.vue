@@ -1,14 +1,17 @@
 <template>
 	<div>
 		<div class="bg-color pd30">
-			<router-link to="/DataStatistics/MembershipStatistics" class="btn btn-warning">返回</router-link>
+			<router-link to="/DataStatistics/MembershipStatistics">
+				<el-button type="primary" icon="el-icon-arrow-left">返回</el-button>
+			</router-link>
 		</div>
 		<div class="pd30 clearfix">
 			<div class="table-responsive">
 				<table class="table table-bordered">
 					<thead>
 						<tr>
-							<!--<th>时间</th>-->
+							<th>时间</th>
+							<th>会员账号</th>
 							<th>牌局编号</th>
 							<th>房间名称</th>
 							<th>投注前金额</th>
@@ -24,7 +27,8 @@
 					</thead>
 					<tbody>
 						<tr v-for="item in loadingList">
-							<!--<td>2018/08/01 16:00</td>-->
+							<td>{{item.start_time | formatDate}}</td>
+							<td>{{item.player_name}}</td>
 							<td>{{item.card_no}}</td>
 							<td>{{item.room_name}}</td>
 							<td>{{item.before_balance}}</td>
@@ -59,6 +63,12 @@
 								<div class="col-lg-5">
 									<table class="table">
 										<thead>
+											<tr>
+												<td class="txt-lf">时间：{{CurrentItem.start_time | formatDate}}</td>
+											</tr>
+											<tr>
+												<td class="txt-lf">会员账号：{{CurrentItem.player_name}}</td>
+											</tr>
 											<tr>
 												<td class="txt-lf">牌局编号：{{CurrentItem.card_no}}</td>
 											</tr>
@@ -124,6 +134,7 @@
 	import AxiosService from "@/assets/scripts/api/axiosService";
 	import Urls from "@/assets/scripts/api/Urls";
 	import Utils from "@/assets/scripts/js/utils";
+	import {formatDate } from "@/assets/scripts/js/TimeStamp";
 	//分页
 	import PagingMain from "@/components/sub/pagingMain/pagingMain";
 	export default {
@@ -191,6 +202,13 @@
 					}
 				}
 				this.GameResults = List;
+			}
+		},
+		filters: { //时间戳转换为日期
+			formatDate(time) {
+				var date = new Date(parseInt(time) * 1000);
+				//return formatDate(date, 'yyyy-MM-dd hh:mm');
+				return formatDate(date, 'yyyy-MM-dd');
 			}
 		}
 	}
