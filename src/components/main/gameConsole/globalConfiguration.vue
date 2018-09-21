@@ -19,19 +19,19 @@
 						<td>
 							<p v-show="!item.bool">{{item.scale_jackpot}}%</p>
 							<div v-show="item.bool">
-								<input type="text" class="form-control" v-model="item.scale_jackpot" />
+								<el-input-number size="mini" v-model="item.scale_jackpot" :min="0" :max="100"></el-input-number>
 							</div>
 						</td>
 						<td>
 							<p v-show="!item.bool">{{item.scale_sys}}%</p>
 							<div v-show="item.bool">
-								<input type="text" class="form-control" v-model="item.scale_sys" />
+								<el-input-number size="mini" v-model="item.scale_sys" :min="0" :max="100"></el-input-number>
 							</div>
 						</td>
 						<td>
 							<p v-show="!item.bool">{{item.scale_stock}}%</p>
 							<div v-show="item.bool">
-								<input type="text" class="form-control" v-model="item.scale_stock" />
+								<el-input-number size="mini" v-model="item.scale_stock" :min="0" :max="100"></el-input-number>
 							</div>
 						</td>
 						<td>
@@ -40,7 +40,7 @@
 							</div>
 							<div v-show="item.bool">
 								<button class="btn btn-success btn-sm" data-toggle="modal" data-target="#gc-AllocatioFundsUpdate" @click="_DetermineButton(index)">确定</button>
-								<button class="btn btn-danger btn-sm" @click="item.bool=false">取消</button>
+								<button class="btn btn-danger btn-sm" @click="getLoadingList">取消</button>
 							</div>
 						</td>
 					</tr>
@@ -76,32 +76,32 @@
 						<td>
 							<p v-show="!item.bool">{{item.datum}}</p>
 							<div v-show="item.bool">
-								<input type="text" class="form-control" v-model="item.datum" />
+								<el-input-number size="mini" v-model="item.datum" :precision="2" :min="0" :max="100000000"></el-input-number>
 							</div>
 						</td>
 						<td>{{item.multiple}}</td>
 						<td>
 							<p v-show="!item.bool">{{item.scale_jackpot}}</p>
 							<div v-show="item.bool">
-								<input type="text" class="form-control" v-model="item.scale_jackpot" />
+								<el-input-number size="mini" v-model="item.scale_jackpot" :precision="2" :min="0" :max="2000000000"></el-input-number>
 							</div>
 						</td>
 						<td>
 							<p v-show="!item.bool">{{item.chance_jackpot}}‰</p>
 							<div v-show="item.bool">
-								<input type="text" class="form-control" v-model="item.chance_jackpot" />
+								<el-input-number size="mini" v-model="item.chance_jackpot" :min="0" :max="1000"></el-input-number>
 							</div>
 						</td>
 						<td>
 							<p v-show="!item.bool">{{item.local_jackpot}}</p>
 							<div v-show="item.bool">
-								<input type="text" class="form-control" v-model="item.local_jackpot" />
+								<el-input-number size="mini" v-model="item.local_jackpot" :precision="2" :min="0" :max="2000000000"></el-input-number>
 							</div>
 						</td>
 						<td>
 							<p v-show="!item.bool">{{item.inventory}}</p>
 							<div v-show="item.bool">
-								<input type="text" class="form-control" v-model="item.inventory" />
+								<el-input-number size="mini" v-model="item.inventory" :precision="2" :min="0" :max="2000000000"></el-input-number>
 							</div>
 						</td>
 						<td>

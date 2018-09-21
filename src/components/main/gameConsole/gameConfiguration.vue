@@ -24,7 +24,7 @@
 								</td>
 								<td>
 									<p v-if="!itemss.bool">{{itemss.element}}</p>
-									<input type="text" class="form-control" v-if="itemss.bool" v-model="itemss.element" />
+									<el-input-number size="mini" v-model="itemss.element" :min="0" :max="1000" v-if="itemss.bool"></el-input-number>
 								</td>
 								<td class="col-lg-4">
 									<div>
@@ -54,7 +54,7 @@
 							<td v-html="index==0? '美酒':'全盘奖'"></td>
 							<td>
 								<span v-show="!Arr.bool">{{Arr.value}}</span><span v-show="!Arr.bool">‰</span>
-								<input type="text" class="form-control" v-show="Arr.bool" v-model="Arr.value" />
+								<el-input-number size="mini" v-model="Arr.value" :min="0" :max="1000" v-show="Arr.bool"></el-input-number>
 							</td>
 							<td>
 								<div v-show="!Arr.bool">
@@ -116,8 +116,8 @@
 				Core: '',
 				CoreType: '',
 				//修改之前获取当前项的信息
-				Current:null,
-				CurrentData:null,
+				Current: null,
+				CurrentData: null,
 			}
 		},
 		created() {
@@ -149,7 +149,7 @@
 				this._type = 2;
 			},
 			//点击修改确定按钮
-			_DetermineButton(index,item) {
+			_DetermineButton(index, item) {
 				this.Current = index;
 				this.CurrentData = item;
 			},

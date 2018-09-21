@@ -1,0 +1,68 @@
+#BlackStyle,
+#BlackStyle body {
+	background-color: #3f3f3f;
+	background-color: rgba(0, 0, 0, .5);
+}
+
+#BlackStyle .color {
+	color: #a3a3a3;
+}
+
+#BlackStyle .color-white {
+	color: #fff;
+}
+
+#BlackStyle .bg-color {
+	background-color: #1f1f1f;
+	background-color: rgba(0, 0, 0, .5);
+}
+
+#BlackStyle .header {
+	background: #000;
+}
+
+#BlackStyle .header-logo {
+	color: #fff;
+	border-right: 1px solid #333;
+}
+
+#BlackStyle .header-return {
+	border-left: 1px solid #333;
+}
+
+#BlackStyle .header-infor:hover p,
+#BlackStyle .header-return:hover {
+	color: #fff;
+}
+
+#BlackStyle .header-setting:hover {
+	background-color: #fff;
+	background-color: rgba(255, 255, 255, .2);
+}
+
+#BlackStyle .nav-content li a:hover,
+#BlackStyle .nav-content li a.current {
+	color: #fff !important;
+}
+
+
+
+/*模态框*/
+
+#BlackStyle .modal-content {
+	background-color: #292929;
+}
+
+#BlackStyle .modal-header,
+#BlackStyle .modal-footer {
+	border-color: #333;
+}
+
+
+/*列表*/
+
+#BlackStyle .table,
+#BlackStyle .table th,
+#BlackStyle .table td {
+	border-color: #333;
+}

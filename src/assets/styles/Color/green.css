@@ -1,0 +1,67 @@
+#GreenStyle,
+#GreenStyle body {
+	background-color: #C7EDCC;
+	background-color: rgba(199, 237, 204, .5);
+}
+
+#GreenStyle .color {
+	color: #000;
+}
+
+#GreenStyle .color-white {
+	color: #000;
+}
+
+#GreenStyle .bg-color {
+	background-color: #C7EDCC;
+	background-color: rgba(199, 237, 204, .5);
+}
+
+#GreenStyle .header {
+	background-color: #C7EDCC;
+}
+
+#GreenStyle .header-logo {
+	color: #000;
+	border-right: 1px solid #b2d5b7;
+}
+
+#GreenStyle .header-return {
+	border-left: 1px solid #b2d5b7;
+}
+
+#GreenStyle .header-infor:hover p,
+#GreenStyle .header-return:hover {
+	color: #2f2f2f;
+}
+
+#GreenStyle .header-setting:hover {
+	background-color: #fff;
+	background-color: rgba(255, 255, 255, .2);
+}
+
+#GreenStyle .nav-content li a:hover,
+#GreenStyle .nav-content li a.current {
+	color: #2f2f2f !important;
+}
+
+
+/*模态框*/
+
+#GreenStyle .modal-content {
+	background-color: #C7EDCC;
+}
+
+#GreenStyle .modal-header,
+#GreenStyle .modal-footer {
+	border-color: #b2d5b7;
+}
+
+
+/*列表*/
+
+#GreenStyle .table,
+#GreenStyle .table th,
+#GreenStyle .table td {
+	border-color: #b2d5b7;
+}

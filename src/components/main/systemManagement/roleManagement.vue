@@ -1,7 +1,7 @@
 <template>
 	<div class="Role-Management">
 		<div class="bg-color pd30 clearfix">
-			<button class="btn btn-success" data-toggle="modal" data-target="#rm_NewRole" @click="_NewButton">新增角色</button>
+			<el-button type="success" icon="el-icon-plus" class="v-a-btm" data-toggle="modal" data-target="#rm_NewRole" @click="_NewButton">新增</el-button>
 		</div>
 		<div class="pd30 clearfix">
 			<div class="table-responsive">
@@ -16,8 +16,8 @@
 						</tr>
 					</thead>
 					<tbody v-if="loadingList.length">
-						<tr v-for="item in loadingList">
-							<td>{{item.id}}</td>
+						<tr v-for="(item,index) in loadingList">
+							<td>{{index+1}}</td>
 							<td>{{item.name}}</td>
 							<td>{{item.remark}}</td>
 							<td>
@@ -48,46 +48,50 @@
 				<div class="modal-content">
 					<el-form :model="RoleForm" :rules="rulesRoleForm" ref="RoleForm" label-width="100px">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true" @click="CollapseArr=[]">&times;</button>
 							<h4 class="modal-title" v-if="!RoleForm.id">新增角色</h4>
 							<h4 class="modal-title" v-else>修改角色</h4>
 						</div>
 						<div class="modal-body">
-							<el-form-item label="角色名" prop="name">
-								<el-input v-model="RoleForm.name" placeholder="请输入角色名"></el-input>
-							</el-form-item>
-							<el-form-item label="角色说明" prop="remark">
-								<el-input v-model="RoleForm.remark" placeholder="请输入角色说明"></el-input>
-							</el-form-item>
-							<el-form-item label="权限" prop="menus">
-								<el-collapse accordion>
-									<el-collapse-item v-for="item in Menus">
-										<template slot="title">{{item.menu_name}}</template>
-										<table class="table">
-											<caption class="txt-rt" style="padding-right: 7px;">
-												<el-checkbox @change="AllChoiceJurisdiction(item)" :data-choice="item.isChoice=_IsAllChoice(item)" v-model="item.isChoice">全选</el-checkbox>
-											</caption>
-											<tbody>
-												<tr v-for="items in item.ChildNodes">
-													<th class="txt-lf">{{items.menu_name}}</th>
-													<td class="txt-rt">
-														<p class="dis-inl-blk mgl10">
-															<el-checkbox-group v-model="RoleForm.menus" @change="ChoiceJurisdiction">
-																<el-checkbox v-for="itemss in items.ChildNodes" :label="itemss.id" :key="itemss.menu_name">{{itemss.menu_name}}</el-checkbox>
-															</el-checkbox-group>
-														</p>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</el-collapse-item>
-								</el-collapse>
-							</el-form-item>
+							<div class="preferential_scroll_box" id="preferential_role" :style="CollapseArr.length > 0 ? 'height:500px':'height:auto'">
+								<div class="preferential_list nav-content">
+									<el-form-item label="角色名" prop="name">
+										<el-input v-model="RoleForm.name" placeholder="请输入角色名"></el-input>
+									</el-form-item>
+									<el-form-item label="角色说明" prop="remark">
+										<el-input v-model="RoleForm.remark" placeholder="请输入角色说明"></el-input>
+									</el-form-item>
+									<el-form-item label="权限" prop="menus">
+										<el-collapse v-model="CollapseArr">
+											<el-collapse-item v-for="item in Menus" :name="item.id">
+												<template slot="title">{{item.menu_name}}</template>
+												<table class="table">
+													<caption class="txt-rt" style="padding-right: 7px;">
+														<el-checkbox @change="AllChoiceJurisdiction(item)" :data-choice="item.isChoice=_IsAllChoice(item)" v-model="item.isChoice">全选</el-checkbox>
+													</caption>
+													<tbody>
+														<tr v-for="items in item.ChildNodes">
+															<th class="txt-lf col-lg-2" style="vertical-align: top !important;">{{items.menu_name}}</th>
+															<td class="txt-lf col-lg-10">
+																<p class="dis-inl-blk mgl10">
+																	<el-checkbox-group v-model="RoleForm.menus" @change="ChoiceJurisdiction">
+																		<el-checkbox v-for="itemss in items.ChildNodes" :label="itemss.id" :key="itemss.menu_name" style="width: 90px;">{{itemss.menu_name}}</el-checkbox>
+																	</el-checkbox-group>
+																</p>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</el-collapse-item>
+										</el-collapse>
+									</el-form-item>
+								</div>
+							</div>
 						</div>
 						<div class="modal-footer">
 							<el-form-item class="mgb0">
 								<el-button type="primary" :plain="true" @click="_NewRole('RoleForm')">确认</el-button>
-								<el-button data-dismiss="modal">关闭</el-button>
+								<el-button data-dismiss="modal" @click="CollapseArr=[]">关闭</el-button>
 							</el-form-item>
 						</div>
 					</el-form>
@@ -127,7 +131,7 @@
 				<div class="modal-content">
 					<el-form :model="UserPasswordForm" :rules="UserPasswordRules" ref="UserPasswordForm" label-width="0">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true" @click="_OperationRest('UserPasswordForm')">&times;</button>
 							<h4 class="modal-title" v-if="OperationCont==1">修改状态</h4>
 							<h4 class="modal-title" v-else>删除角色</h4>
 						</div>
@@ -159,10 +163,14 @@
 </template>
 
 <script>
+	import "@/assets/scripts/common/mousewheel";
+	import "@/assets/scripts/common/perfectScrollbar";
 	import AxiosService from "@/assets/scripts/api/axiosService";
 	import Urls from "@/assets/scripts/api/Urls";
 	//分页
 	import PagingMain from "@/components/sub/pagingMain/pagingMain";
+	import Regular from "@/assets/scripts/js/regular";
+	import FV from "@/assets/scripts/js/FormValidation";
 	export default {
 		data() {
 			return {
@@ -172,6 +180,8 @@
 				Menus: [],
 				//所有权限ID
 				AllJurisdiction: [],
+				//控制权限折叠面版
+				CollapseArr: [],
 				RoleForm: {
 					//角色名
 					name: '',
@@ -183,12 +193,12 @@
 				rulesRoleForm: {
 					name: [{
 						required: true,
-						message: '角色名不能为空！',
+						validator: FV.nameCheck,
 						trigger: 'blur'
 					}],
 					remark: [{
 						required: true,
-						message: '角色说明不能为空！',
+						validator: FV.RemarksCheck,
 						trigger: 'blur'
 					}]
 				},
@@ -201,7 +211,7 @@
 				UserPasswordRules: {
 					UserPassword: [{
 						required: true,
-						message: '密码不能为空',
+						message: '请填写密码！',
 						trigger: 'blur'
 					}]
 				},
@@ -221,6 +231,10 @@
 		created() {
 			this._LoadingList();
 			this._LoadingMenu();
+		},
+		mounted() {
+			/*调用滚动条插件*/
+			$('#preferential_role').perfectScrollbar();
 		},
 		methods: {
 			//获取分页信息
@@ -248,7 +262,7 @@
 						for(let i = 0; i < this.Menus.length; i++) {
 							let childNodes = this.Menus[i].ChildNodes;
 							for(let j = 0; j < childNodes.length; j++) {
-								let childNodess = childNodes[j].ChildNodes; 
+								let childNodess = childNodes[j].ChildNodes;
 								for(let z = 0; z < childNodess.length; z++) {
 									this.AllJurisdiction.push(childNodess[z].id);
 								}
@@ -319,6 +333,7 @@
 			//选择权限
 			ChoiceJurisdiction(val) {
 				this.RoleForm.menus = val;
+				console.log(this.RoleForm.menus);
 			},
 			//全选权限
 			AllChoiceJurisdiction(item) {
@@ -345,6 +360,26 @@
 						this.RoleForm.menus.splice(this.RoleForm.menus.indexOf(arrs[i]), 1);
 					}
 				}
+				console.log(this.RoleForm.menus);
+			},
+			//当前是否勾选全部
+			_IsAllChoice(item) {
+				let childNodes = item.ChildNodes;
+				let arrs = [];
+				for(let i = 0; i < childNodes.length; i++) {
+					let childNodess = childNodes[i].ChildNodes;
+					for(let j = 0; j < childNodess.length; j++) {
+						arrs.push(childNodess[j].id);
+					}
+				}
+				let JAll = this.RoleForm.menus;
+				for(let i = 0; i < arrs.length; i++) {
+					//全选
+					if(JAll.indexOf(arrs[i]) == -1) {
+						return false;
+					}
+				}
+				return true;
 			},
 			//点击新增角色按钮
 			_NewButton() {
@@ -407,25 +442,6 @@
 					}
 				});
 			},
-			//当前是否勾选全部
-			_IsAllChoice(item) {
-				let childNodes = item.ChildNodes;
-				let arrs = [];
-				for(let i = 0; i < childNodes.length; i++) {
-					let childNodess = childNodes[i].ChildNodes;
-					for(let j = 0; j < childNodess.length; j++) {
-						arrs.push(childNodess[j].id);
-					}
-				}
-				let JAll = this.RoleForm.menus;
-				for(let i = 0; i < arrs.length; i++) {
-					//全选
-					if(JAll.indexOf(arrs[i]) == -1) {
-						return false;
-					}
-				}
-				return true;
-			},
 		},
 		components: {
 			PagingMain
@@ -455,5 +471,10 @@
 	
 	#rm_NewRole .el-collapse>div:first-child {
 		margin-top: 0;
+	}
+	
+	#rm_NewRole .el-checkbox {
+		margin-left: 0 !important;
+		margin-right: 15px;
 	}
 </style>

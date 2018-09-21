@@ -1,29 +1,50 @@
 <template>
 	<div>
 		<div class="bg-color pd30 clearfix">
-			<button class="btn btn-success v-a-btm" data-toggle="modal" data-target="#pm_NewPersonnel" @click="_NewButton">新增管理人员</button>
-			<div class="dis-inl-blk mgl10">
-				<p>账号</p>
-				<div class="mgt10">
-					<el-input v-model="Search.account" placeholder="可输入多个，请以半形逗号隔开"></el-input>
+			<div class="clearfix">
+				<div class="dis-inl-blk">
+					<p>账号</p>
+					<div class="mgt10">
+						<el-input v-model="Search.account" placeholder="请输入账号"></el-input>
+					</div>
 				</div>
-			</div>
-			<div class="dis-inl-blk">
-				<p>姓名</p>
-				<div class="mgt10">
-					<el-input v-model="Search.realname" placeholder="例:周杰伦，可输入多个,请以半形逗号隔开"></el-input>
+				<span class="dis-inl-blk error-dis">
+				<el-tooltip 
+						effect="dark" 
+						:content="Regular.searchAccountError" 
+						placement="top" 
+						v-if="FV.commonFv(Search.account,Regular.searchAccount)">
+						<i class="el-icon-error color-red ft12"></i>
+					</el-tooltip>
+			</span>
+				<div class="dis-inl-blk">
+					<p>姓名</p>
+					<div class="mgt10">
+						<el-input v-model="Search.realname" placeholder="请输入姓名"></el-input>
+					</div>
 				</div>
-			</div>
-			<div class="dis-inl-blk">
-				<p>角色</p>
-				<div class="mgt10">
-					<el-select v-model="Search.role_id" placeholder="请选择角色">
-						<el-option v-for="item in RoleList" :key="item.id" :label="item.name" :value="item.id">
-						</el-option>
-					</el-select>
+				<span class="dis-inl-blk error-dis">
+				<el-tooltip 
+						effect="dark" 
+						:content="Regular.SearchNameError" 
+						placement="top" 
+						v-if="FV.commonFv(Search.realname,Regular.SearchName)">
+						<i class="el-icon-error color-red ft12"></i>
+					</el-tooltip>
+			</span>
+				<div class="dis-inl-blk">
+					<p>角色</p>
+					<div class="mgt10">
+						<el-select v-model="Search.role_id" placeholder="请选择角色">
+							<el-option v-for="item in RoleList" :key="item.id" :label="item.name" :value="item.id">
+							</el-option>
+						</el-select>
+					</div>
 				</div>
+				<el-button type="success" icon="el-icon-search" class="v-a-btm mgl16" @click="_Search">查询</el-button>
 			</div>
-			<button class="btn btn-success v-a-btm" @click="_Search">搜索</button>
+			<el-button type="success" icon="el-icon-plus" class="v-a-btm mgt10" data-toggle="modal" data-target="#pm_NewPersonnel" @click="_NewButton">新增</el-button>
+
 		</div>
 		<div class="pd30 clearfix">
 			<div class="table-responsive">
@@ -40,8 +61,8 @@
 						</tr>
 					</thead>
 					<tbody v-if="loadingList.length">
-						<tr v-for="item in loadingList">
-							<td>{{item.id}}</td>
+						<tr v-for="(item,index) in loadingList">
+							<td>{{index+1}}</td>
 							<td>{{item.account}}</td>
 							<td>{{item.realname}}</td>
 							<td>{{item.role_name}}</td>
@@ -111,16 +132,16 @@
 											<el-radio v-for="item in SexArr" :label="item.label">{{item.value}}</el-radio>
 										</el-radio-group>
 									</el-form-item>
-									<el-form-item label="Email">
+									<el-form-item label="Email" prop="email">
 										<el-input placeholder="例：163@freer.com" v-model="PersonnelForm.email"></el-input>
 									</el-form-item>
 									<el-form-item label="生日">
-										<el-date-picker type="date" placeholder="例：1900-07-09" v-model="PersonnelForm.birth" style="width: 100%;"></el-date-picker>
+										<el-date-picker type="date" placeholder="例：1900-07-09" v-model="PersonnelForm.birth" :picker-options="pickerOptionsStart" style="width: 100%;" value-format="yyyy-MM-dd" :editable="false"></el-date-picker>
 									</el-form-item>
-									<el-form-item label="微信号">
+									<el-form-item label="微信号" prop="wechat">
 										<el-input placeholder="例：wechar123" v-model="PersonnelForm.wechat"></el-input>
 									</el-form-item>
-									<el-form-item label="QQ">
+									<el-form-item label="QQ" prop="qq">
 										<el-input placeholder="例：123456789" v-model="PersonnelForm.qq"></el-input>
 									</el-form-item>
 								</div>
@@ -130,7 +151,7 @@
 									<div class="page-header" style="margin-top: 0 !important;">
 										<h1>备注</h1>
 									</div>
-									<el-form-item label="备注">
+									<el-form-item label="备注" prop="remark">
 										<el-col>
 											<el-input type="textarea" v-model="PersonnelForm.remark"></el-input>
 										</el-col>
@@ -213,9 +234,16 @@
 	import Urls from "@/assets/scripts/api/Urls";
 	//分页
 	import PagingMain from "@/components/sub/pagingMain/pagingMain";
+	import Regular from "@/assets/scripts/js/regular";
+	import FV from "@/assets/scripts/js/FormValidation";
 	export default {
 		data() {
 			return {
+				pickerOptionsStart: {
+					disabledDate: (time) => {
+						return time.getTime() > Date.now();
+					}
+				},
 				loadingList: [],
 				RoleList: [],
 				//搜索
@@ -224,6 +252,8 @@
 					realname: '',
 					role_id: '',
 				},
+				Regular: Regular,
+				FV: FV,
 				//当前人员信息
 				CurrentItem: [],
 				UserPasswordForm: {
@@ -233,7 +263,7 @@
 				UserPasswordRules: {
 					UserPassword: [{
 						required: true,
-						message: '密码不能为空',
+						message: '请填写密码！',
 						trigger: 'blur'
 					}]
 				},
@@ -262,24 +292,40 @@
 				rulesPersonnelForm: {
 					account: [{
 						required: true,
-						message: '账号不能为空',
+						validator: FV.accountCheck,
 						trigger: 'blur'
 					}],
 					realname: [{
 						required: true,
-						message: '姓名不能为空',
+						validator: FV.nameCheck,
 						trigger: 'blur'
 					}],
 					phone: [{
 						required: true,
-						message: '手机号不能为空',
+						validator: FV.phoneCheck,
 						trigger: 'blur'
 					}],
 					role_id: [{
 						required: true,
-						message: '请选择角色',
+						message: '请选择角色！',
 						trigger: 'change'
 					}],
+					email:[{
+						validator: FV.emailCheck2,
+						trigger: 'blur'
+					}],
+					wechat:[{
+						validator: FV.WeChatCheck2,
+						trigger: 'blur'
+					}],
+					qq:[{
+						validator: FV.qqCheck2,
+						trigger: 'blur'
+					}],
+					remark:[{
+						validator: FV.RemarksCheck2,
+						trigger: 'blur'
+					}]
 				},
 				SexArr: [{
 					value: '男',
@@ -333,9 +379,12 @@
 			},
 			//搜索
 			_Search() {
+				if(FV.commonFv(this.Search.account, Regular.searchAccount)||FV.commonFv(this.Search.realname, Regular.SearchName)) {
+					this.$message.error('请输入正确的内容，消除栏位错误后重新查询！');
+					return;
+				}
 				let Url = Urls.Url + Urls.GameUser;
 				let dataObj = this.Search;
-				console.log(dataObj);
 				AxiosService.postRequest(Url, dataObj).then((res) => {
 					if(res.code == 200) {
 						this.pageInfor.ListPage = res.users;
@@ -392,10 +441,13 @@
 			//二次确认新增管理人员
 			AgainNewPersonnel() {
 				let Url = Urls.Url + Urls.GameUserAdd;
-				if(this.PersonnelForm.id) {
-					delete this.PersonnelForm.account;
-				}
+				let key = 'account';
+				let accounts = this.PersonnelForm.account;
 				let dataObj = this.PersonnelForm;
+				if(dataObj.id) {
+					//如果是修改那么就删除account
+					delete dataObj.account;
+				}
 				AxiosService.postRequest(Url, dataObj).then((res) => {
 					if(res.code == 1) {
 						$('#pm_NewPersonnel').modal('hide');
@@ -409,6 +461,11 @@
 					} else {
 						$('#pm_AgainNewPersonnel').modal('hide');
 						this.$message.error(res.msg);
+						//如果修改失败，那么把原来的account再次添加到对象中
+						if(dataObj.id) {
+							this.PersonnelForm[key] = accounts;
+						}
+						console.log(this.PersonnelForm);
 					}
 				});
 			},

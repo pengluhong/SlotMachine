@@ -1,14 +1,25 @@
 <template>
 	<div>
 		<div class="bg-color pd30 clearfix">
-			<button class="btn btn-success v-a-btm" data-toggle="modal" data-target="#am-NewAgent" @click="ClickAddAgent">新增</button>
-			<div class="dis-inl-blk mgl10">
-				<p>代理账号</p>
-				<div class="mgt10">
-					<input type="text" class="form-control" placeholder="请输入代理账号" v-model="agent_name">
+			<div class="clearfix">
+				<div class="dis-inl-blk">
+					<p>代理账号</p>
+					<div class="mgt10">
+						<el-input placeholder="请输入代理账号" v-model="agent_name"></el-input>
+					</div>
 				</div>
+				<span class="dis-inl-blk error-dis">
+					<el-tooltip 
+						effect="dark" 
+						:content="Regular.searchAccountError" 
+						placement="top" 
+						v-if="FV.commonFv(agent_name,Regular.searchAccount)">
+						<i class="el-icon-error color-red ft12"></i>
+					</el-tooltip>
+				</span>
+				<el-button type="success" icon="el-icon-search" class="v-a-btm" @click="SearchAgent">查询</el-button>
 			</div>
-			<button class="btn btn-success mgl10 v-a-btm" @click="SearchAgent">搜索</button>
+			<el-button type="success" icon="el-icon-plus" class="v-a-btm mgt10" data-toggle="modal" data-target="#am-NewAgent" @click="ClickAddAgent">新增</el-button>
 		</div>
 		<div class="pd30 clearfix">
 			<div class="table-responsive">
@@ -24,7 +35,7 @@
 							<th>操作</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody v-if="loadingList.length">
 						<tr v-for="(item,index) in loadingList">
 							<td>{{item.id}}</td>
 							<td>{{item.agent_name}}</td>
@@ -44,6 +55,11 @@
 							</td>
 						</tr>
 					</tbody>
+					<tbody v-else>
+						<tr>
+							<td colspan="7">无数据</td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
 			<div class="txt-rt">
@@ -54,9 +70,9 @@
 		<div class="modal fade" id="am-NewAgent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
-					<el-form :model="AgentForm" :rules="AgentFormRules" ref="AgentForm" label-width="100px">
+					<el-form :model="AgentForm" status-icon :rules="AgentFormRules" ref="AgentForm" label-width="100px">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true" @click="_NewAgentRest('AgentForm')">&times;</button>
 							<h4 class="modal-title" v-html="AgentForm.id ? '修改代理':'新增代理'"></h4>
 						</div>
 						<div class="modal-body txt-ct">
@@ -67,20 +83,20 @@
 								<el-input v-model="AgentForm.id" :disabled="true"></el-input>
 							</el-form-item>
 							<el-form-item label="代理账号" prop="agent_name">
-								<el-input v-model="AgentForm.agent_name" placeholder="可使用英文字母或数字4-12位" :disabled="AgentForm.id ? true :false"></el-input>
+								<el-input v-model="AgentForm.agent_name" placeholder="请输入代理账号" :disabled="AgentForm.id ? true :false"></el-input>
 							</el-form-item>
 							<el-form-item label="代理名称" prop="nick_name">
-								<el-input v-model="AgentForm.nick_name" placeholder="可使用英文字母、数字、中文最多12位"></el-input>
+								<el-input v-model="AgentForm.nick_name" placeholder="请输入代理名称"></el-input>
 							</el-form-item>
 							<el-form-item label="密码" prop="agent_password" v-if="!AgentForm.id">
 								<el-col :span="13">
-									<el-input v-model="AgentForm.agent_password" :disabled="true"></el-input>
+									<el-input v-model="AgentForm.agent_password" placeholder="请点击生成密码" :disabled="true"></el-input>
 								</el-col>
 								<el-button type="button" class="mgl5" :disabled="!AgentForm.agent_password" v-clipboard:copy="AgentForm.agent_password" v-clipboard:success="onCopy" v-clipboard:error="onError">复制密码</el-button>
 								<el-button type="primary" class="mgl5" @click="GeneratingCipher">生成密码</el-button>
 							</el-form-item>
 							<el-form-item label="代理识别码" prop="code">
-								<el-input v-model="AgentForm.code" placeholder="可使用数字4位" :disabled="AgentForm.id ? true :false"></el-input>
+								<el-input v-model="AgentForm.code" placeholder="请输入代理识别码，仅可输入4位数字" :disabled="AgentForm.id ? true :false"></el-input>
 							</el-form-item>
 							<el-form-item label="手机号码" prop="mobile">
 								<el-input placeholder="请输入您的手机号码" v-model="AgentForm.mobile" class="input-with-select">
@@ -163,7 +179,7 @@
 				<div class="modal-content">
 					<el-form :model="StateForm" :rules="StateRules" ref="StateForm" label-width="0">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true" @click="StateRest('StateForm')">&times;</button>
 							<h4 class="modal-title">启用/停用最高代理</h4>
 						</div>
 						<div class="modal-body txt-ct">
@@ -225,7 +241,7 @@
 				<div class="modal-content">
 					<el-form :model="StateForm" :rules="StateRules" ref="StateForm" label-width="0">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true" @click="StateRest('StateForm')">&times;</button>
 							<h4 class="modal-title" id="myModalLabel">金钥状态修改</h4>
 						</div>
 						<div class="modal-body txt-ct">
@@ -257,7 +273,7 @@
 				<div class="modal-content">
 					<el-form :model="StateForm" :rules="StateRules" ref="StateForm" label-width="0">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true" @click="StateRest('StateForm')">&times;</button>
 							<h4 class="modal-title" id="myModalLabel">重新产出金钥</h4>
 						</div>
 						<div class="modal-body txt-ct">
@@ -292,12 +308,31 @@
 	import PagingMain from "@/components/sub/pagingMain/pagingMain";
 	import { formatDate } from "@/assets/scripts/js/TimeStamp";
 	import { RandomNumber } from "@/assets/scripts/js/RandomNumber";
+	import Regular from "@/assets/scripts/js/regular";
+	import FV from "@/assets/scripts/js/FormValidation";
 	export default {
 		data() {
+			let phoneCheck = (rule, value, callback) => {
+				if(this.AgentForm.profix === '86') {
+					//+86
+					if(!Regular.Phone86.test(value)) {
+						return callback(new Error(Regular.PhoneError));
+					}
+					callback();
+				} else if(this.AgentForm.profix === '886') {
+					//+886
+					if(!Regular.Phone886.test(value)) {
+						return callback(new Error(Regular.PhoneError));
+					}
+					callback();
+				}
+			};
 			return {
 				loadingList: [],
 				//代理账号
 				agent_name: '',
+				Regular: Regular,
+				FV: FV,
 				//当前代理信息
 				CurrentItem: [],
 				CurrentIndex: null,
@@ -315,32 +350,32 @@
 				AgentFormRules: {
 					agent_name: [{
 						required: true,
-						message: '代理账号不能为空',
+						validator: FV.accountCheck,
 						trigger: 'blur'
 					}],
 					nick_name: [{
 						required: true,
-						message: '代理名称不能为空',
+						validator: FV.nameCheck,
 						trigger: 'blur'
 					}],
 					agent_password: [{
 						required: true,
-						message: '密码不能为空',
+						message: '密码不能为空！',
 						trigger: 'blur'
 					}],
 					code: [{
 						required: true,
-						message: '代理识别码不能为空',
+						validator: FV.codeCheck,
 						trigger: 'blur'
 					}],
 					mobile: [{
 						required: true,
-						message: '手机号码不能为空',
+						validator: phoneCheck,
 						trigger: 'blur'
 					}],
 					email: [{
 						required: true,
-						message: '电子邮箱不能为空',
+						validator: FV.emailCheck,
 						trigger: 'blur'
 					}],
 				},
@@ -365,7 +400,7 @@
 				StateRules: {
 					UserPassword: [{
 						required: true,
-						message: '密码不能为空',
+						message: '请填写密码！',
 						trigger: 'blur'
 					}]
 				},
@@ -404,7 +439,6 @@
 						console.log(res);
 					}
 				});
-
 				//权限
 				let Url2 = Urls.Url + Urls.ProxyAllowFinance;
 				AxiosService.postRequest(Url2).then((res) => {
@@ -420,6 +454,10 @@
 			},
 			//代理账号搜索
 			SearchAgent() {
+				if(FV.commonFv(this.agent_name, Regular.searchAccount)) {
+					this.$message.error('请输入正确的内容，消除栏位错误后重新查询！');
+					return;
+				}
 				let Url = Urls.Url + Urls.ProxyIndex;
 				let dataObj = {
 					agent_name: this.agent_name
@@ -439,7 +477,7 @@
 				//清空因编辑填入的数据
 				this.AgentForm = {
 					agent_name: '',
-					agent_name: '',
+					nick_name: '',
 					agent_password: '',
 					code: '',
 					profix: '86',

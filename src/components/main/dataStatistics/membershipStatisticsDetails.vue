@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="bg-color pd30">
-			<router-link to="/MembershipStatistics" class="btn btn-warning">返回</router-link>
+			<router-link to="/DataStatistics/MembershipStatistics" class="btn btn-warning">返回</router-link>
 		</div>
 		<div class="pd30 clearfix">
 			<div class="table-responsive">
@@ -9,16 +9,16 @@
 					<thead>
 						<tr>
 							<!--<th>时间</th>-->
-							<th>牌局号</th>
+							<th>牌局编号</th>
 							<th>房间名称</th>
-							<th>开局前金额</th>
-							<th>开局后金额</th>
-							<th>押注金额</th>
-							<th>赔付金额</th>
+							<th>投注前金额</th>
+							<th>结算后金额</th>
+							<th>投注金额</th>
+							<th>杀数</th>
 							<th>中奖类别</th>
-							<th>是否获得奖池</th>
-							<th>获得免费拉霸次数</th>
-							<th>是否免费拉霸</th>
+							<th>奖池获利</th>
+							<th>免费拉霸次数</th>
+							<th>免费拉霸中奖</th>
 							<th>本局结果</th>
 						</tr>
 					</thead>
@@ -34,9 +34,9 @@
 							<td>{{item.win_type}}</td>
 							<td>{{item.is_jackpot}}</td>
 							<td>{{item.free_slot}}</td>
-							<td>{{item.is_free}}</td>
+							<td v-html="item.is_free > 0 ? item.is_free:'否'"></td>
 							<td>
-								<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#ResultList" @click="_SeeGameResults(item.cards)">查看</button>
+								<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#ResultList" @click="_SeeGameResults(item)">查看</button>
 							</td>
 						</tr>
 					</tbody>
@@ -48,24 +48,63 @@
 			</div>
 			<!-- 模态框（Modal） -->
 			<div class="modal fade" id="ResultList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
+				<div class="modal-dialog" style="width: 700px;">
 					<div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-							<h4 class="modal-title" id="myModalLabel">查看结果</h4>
+							<h4 class="modal-title">游戏结果</h4>
 						</div>
 						<div class="modal-body">
-							<div class="form-group">
-								<div class="table-responsive">
-									<table class="table table-bordered">
-										<tbody>
-											<tr v-for="item in GameResults">
-												<td v-for="items in item.list">
-													<img :src="'/static/images/numbers/'+items+'.png'" />
-												</td>
+							<div class="clearfix">
+								<div class="col-lg-5">
+									<table class="table">
+										<thead>
+											<tr>
+												<td class="txt-lf">牌局编号：{{CurrentItem.card_no}}</td>
 											</tr>
-										</tbody>
+											<tr>
+												<td class="txt-lf">房间名称：{{CurrentItem.room_name}}</td>
+											</tr>
+											<tr>
+												<td class="txt-lf">投注前金额：{{CurrentItem.before_balance}}</td>
+											</tr>
+											<tr>
+												<td class="txt-lf">结算后金额：{{CurrentItem.after_balance}}</td>
+											</tr>
+											<tr>
+												<td class="txt-lf">投注金额：{{CurrentItem.betting_amount}}</td>
+											</tr>
+											<tr>
+												<td class="txt-lf">杀数：{{CurrentItem.money}}</td>
+											</tr>
+											<tr>
+												<td class="txt-lf">中奖类别：{{CurrentItem.win_type}}</td>
+											</tr>
+											<tr>
+
+												<td class="txt-lf">奖池获利：{{CurrentItem.is_jackpot}}</td>
+											</tr>
+											<tr>
+												<td class="txt-lf">免费拉霸次数：{{CurrentItem.free_slot}}</td>
+											</tr>
+											<tr>
+												<td class="txt-lf">免费拉霸中奖：<span v-html="CurrentItem.is_free > 0 ? CurrentItem.is_free:'否'"></span></td>
+											</tr>
+										</thead>
 									</table>
+								</div>
+								<div class="form-group col-lg-7">
+									<div class="table-responsive">
+										<table class="table table-bordered">
+											<tbody>
+												<tr v-for="item in GameResults">
+													<td v-for="items in item.list">
+														<img :src="'/static/images/numbers/'+items+'.png'" />
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -94,6 +133,8 @@
 		data() {
 			return {
 				loadingList: [],
+				//当前牌局信息
+				CurrentItem: [],
 				//游戏结果
 				GameResults: [],
 				//分页
@@ -134,7 +175,8 @@
 				});
 			},
 			//查看游戏结果
-			_SeeGameResults(cards) {
+			_SeeGameResults(item) {
+				this.CurrentItem = item;
 				let List = [{
 					list: []
 				}, {
@@ -145,7 +187,7 @@
 				for(let i = 0; i < List.length; i++) {
 					let z = (i + 1) * 5;
 					for(let j = z - 5; j < z; j++) {
-						List[i].list.push(cards[j]);
+						List[i].list.push(item.cards[j]);
 					}
 				}
 				this.GameResults = List;

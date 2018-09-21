@@ -7,6 +7,9 @@ export default {
 	AdminLogin: '/admin/login',
 	//获取菜单
 	GameIndex: '/game/index',
+	
+	//改变网站颜色风格
+	GameTheme:'/game/theme',
 
 	/*最高代理模块*/
 	//代理管理初始化请求
@@ -41,8 +44,11 @@ export default {
 	GameRoce: '/game/roce',
 	//公告推送配置
 	Notice: '/game/notice',
-	//新增公告
+	//新增、编辑公告
 	AddNotice: '/game/noticeEdit',
+	//删除公告
+	GameNoticeDel:'/game/noticeDel',
+	//搜索公告
 	/*end*/
 
 	/*数据统计模块*/
@@ -76,5 +82,10 @@ export default {
 	GameAdminStatus: '/game/adminStatus',
 	//删除后台人员
 	GameAdminDel: '/game/adminDel',
+	/*end*/
+	
+	/*玩家管理模块*/
+	//玩家列表、搜索
+	GamePlayers:'/game/players',
 	/*end*/
 }

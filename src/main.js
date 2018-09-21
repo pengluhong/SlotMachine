@@ -16,12 +16,15 @@ Vue.use(VueClipboard)
 import htmlToPdf from '@/assets/scripts/js/htmlToPdf'
 Vue.use(htmlToPdf)
 
+import store from './store'
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
 	el: '#app',
 	router,
+	store,
 	components: {
 		App
 	},

@@ -1,0 +1,44 @@
+#WhiteStyle,#WhiteStyle body {
+	background-color: #e7e7e7;
+}
+
+#WhiteStyle .color {
+	color: #848484;
+}
+
+#WhiteStyle .color-white {
+	color: #000;
+}
+
+#WhiteStyle .bg-color {
+	background-color: #f1f1f1;
+	background-color: rgba(255, 255, 255, .8);
+}
+
+#WhiteStyle .header {
+	background-color: #313b44;
+}
+
+#WhiteStyle .header-logo {
+	color: #fff;
+	border-right: 1px solid #848484;
+}
+
+#WhiteStyle .header-return {
+	border-left: 1px solid #848484;
+}
+
+#WhiteStyle .header-infor:hover p,
+#WhiteStyle .header-return:hover {
+	color: #fff;
+}
+
+#WhiteStyle .header-setting:hover {
+	background-color: #fff;
+	background-color: rgba(0, 0, 0, .2);
+}
+
+#WhiteStyle .nav-content li a:hover,
+#WhiteStyle .nav-content li a.current {
+	color: #32c89a !important;
+}

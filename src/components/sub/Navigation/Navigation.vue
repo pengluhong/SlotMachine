@@ -2,62 +2,14 @@
 	<div class="preferential_scroll_box nav-main bg-color" id="nav_main">
 		<div class="preferential_list nav-content">
 			<ul>
-				<li>
-					<a href="javascript:;" class="bg-color">
-						最高代理
-						<i class="glyphicon glyphicon-chevron-down pull-right"></i>
+				<li v-for="item in Menus">
+					<a href="javascript:;" class="color bg-color">
+						{{item.menu_name}}
+						<i class="el-icon-arrow-down pull-right"></i>
 					</a>
 					<ul>
-						<li>
-							<router-link to="/AgencyManagement">代理管理</router-link>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;" class="bg-color">
-						游戏控制台
-						<i class="glyphicon glyphicon-chevron-down pull-right"></i>
-					</a>
-					<ul>
-						<li>
-							<router-link to="/">全局配置</router-link>
-						</li>
-						<li>
-							<router-link to="/GameConfiguration">游戏配置</router-link>
-						</li>
-						<li>
-							<router-link to="/AnnouncementConfiguration">公告推送配置</router-link>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;" class="bg-color">
-						数据统计
-						<i class="glyphicon glyphicon-chevron-down pull-right"></i>
-					</a>
-					<ul>
-						<li>
-							<router-link to="/GlobalStatistics">全局统计</router-link>
-						</li>
-						<li>
-							<router-link to="/RoomStatistics">房间统计</router-link>
-						</li>
-						<li>
-							<router-link to="/MembershipStatistics">会员统计</router-link>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:;" class="bg-color">
-						系统管理
-						<i class="glyphicon glyphicon-chevron-down pull-right"></i>
-					</a>
-					<ul>
-						<li>
-							<router-link to="/RoleManagement">角色管理列表</router-link>
-						</li>
-						<li>
-							<router-link to="/PersonnelManagement">后台人员管理列表</router-link>
+						<li v-for="items in item.ChildNodes">
+							<router-link :to="items.front_url" class="color">{{items.menu_name}}</router-link>
 						</li>
 					</ul>
 				</li>
@@ -69,20 +21,54 @@
 <script>
 	import "@/assets/scripts/common/mousewheel";
 	import "@/assets/scripts/common/perfectScrollbar";
+
+	import AxiosService from "@/assets/scripts/api/axiosService";
+	import Urls from "@/assets/scripts/api/Urls";
 	export default {
+		data() {
+			return {
+				Menus: [],
+			}
+		},
 		mounted() {
-			//导航收缩
-			$('.nav-content li > a').click(function() {
-				if($(this).siblings('ul').css('display') == 'none') {
-					$(this).siblings('ul').slideDown();
-					$(this).find('.glyphicon').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-				} else {
-					$(this).siblings('ul').slideUp();
-					$(this).find('.glyphicon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-				}
-			});
-			/*侧边导航调用滚动条插件*/
-			$('#nav_main').perfectScrollbar();
+			this.MenusOperation();
+		},
+		created() {
+			this.LoadingMenus();
+		},
+		methods: {
+			LoadingMenus() {
+				this.Menus = JSON.parse(localStorage.getItem('Menus'));
+			},
+			//菜单导航操作
+			MenusOperation() {
+				//导航收缩
+				$('.nav-content li > a').click(function() {
+					if($(this).siblings('ul').css('display') == 'none') {
+						$(this).siblings('ul').slideDown();
+						$(this).find('>i').removeClass('el-icon-arrow-up').addClass('el-icon-arrow-down');
+					} else {
+						$(this).siblings('ul').slideUp();
+						$(this).find('>i').removeClass('el-icon-arrow-down').addClass('el-icon-arrow-up');
+					}
+				});
+				/*侧边导航调用滚动条插件*/
+				$('#nav_main').perfectScrollbar();
+			}
+		},
+		computed: {
+			getMenus() {
+				return this.$store.state.Menus
+			}
+		},
+		watch: {
+			getMenus(menus) {
+				this.Menus = menus;
+				const that = this;
+				setTimeout(function() {
+					that.MenusOperation();
+				}, 200);
+			}
 		}
 	}
 </script>

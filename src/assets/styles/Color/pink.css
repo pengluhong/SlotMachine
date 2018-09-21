@@ -1,0 +1,67 @@
+#PinkStyle,
+#PinkStyle body {
+	background-color: #e598ab;
+	background-color: rgba(229, 152, 171, .5);
+}
+
+#PinkStyle .color {
+	color: #fff;
+}
+
+#PinkStyle .color-white {
+	color: #fff;
+}
+
+#PinkStyle .bg-color {
+	background-color: #e598ab;
+	background-color: rgba(229, 152, 171, .5);
+}
+
+#PinkStyle .header {
+	background-color: #e598ab;
+}
+
+#PinkStyle .header-logo {
+	color: #fff;
+	border-right: 1px solid #d18b9c;
+}
+
+#PinkStyle .header-return {
+	border-left: 1px solid #d18b9c;
+}
+
+#PinkStyle .header-infor:hover p,
+#PinkStyle .header-return:hover {
+	color: red;
+}
+
+#PinkStyle .header-setting:hover {
+	background-color: #fff;
+	background-color: rgba(255, 255, 255, .2);
+}
+
+#PinkStyle .nav-content li a:hover,
+#PinkStyle .nav-content li a.current {
+	color: red !important;
+}
+
+
+/*模态框*/
+
+#PinkStyle .modal-content {
+	background-color: #e598ab;
+}
+
+#PinkStyle .modal-header,
+#PinkStyle .modal-footer {
+	border-color: #d18b9c;
+}
+
+
+/*列表*/
+
+#PinkStyle .table,
+#PinkStyle .table th,
+#PinkStyle .table td {
+	border-color: #d18b9c;
+}
