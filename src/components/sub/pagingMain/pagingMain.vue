@@ -18,7 +18,7 @@
 		},
 		methods: {
 			setPagingCont() {
-				this.$emit('getPagingCont', this.CurrentPage);
+				this.$emit('getPagingCont', this.CurrentPage, this.currentPage);
 			},
 			//点击上一页
 			prevClick(i) {

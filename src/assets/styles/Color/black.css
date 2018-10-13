@@ -46,7 +46,6 @@
 }
 
 
-
 /*模态框*/
 
 #BlackStyle .modal-content {
@@ -63,6 +62,7 @@
 
 #BlackStyle .table,
 #BlackStyle .table th,
-#BlackStyle .table td {
+#BlackStyle .table td,
+#BlackStyle .border-color {
 	border-color: #333;
 }

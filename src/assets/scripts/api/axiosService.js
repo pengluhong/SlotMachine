@@ -2,10 +2,10 @@ import axios from 'axios';
 import qs from 'qs';
 export default {
 	postRequest(Url, dataObj) {
-		//延长登录时间，防止登出
-		localStorage.setItem('logoutTime', new Date().getTime() + (15 * 60 * 1000));
 		let headerArrs = '';
 		if(localStorage.getItem('LoginToken')) {
+			//延长登录时间，防止登出
+			localStorage.setItem('logoutTime', new Date().getTime() + (15 * 60 * 1000));
 			headerArrs = {
 				headers: {
 					Authorization: localStorage.getItem('LoginToken'),
@@ -22,16 +22,19 @@ export default {
 				location.href = '/Login';
 				return;
 			}
+			if(datas.code == 500 || datas.code == 405) {
+				return;
+			}
 			return Promise.resolve(res.data);
 		}).catch((e) => {
 			console.log(e);
 		});
 	},
 	getRequest(Url, dataObj) {
-		//延长登录时间，防止登出
-		localStorage.setItem('logoutTime', new Date().getTime() + (15 * 60 * 1000));
 		let headerArrs = '';
 		if(localStorage.getItem('LoginToken')) {
+			//延长登录时间，防止登出
+			localStorage.setItem('logoutTime', new Date().getTime() + (15 * 60 * 1000));
 			headerArrs = {
 				headers: {
 					Authorization: localStorage.getItem('LoginToken'),
@@ -50,6 +53,9 @@ export default {
 			if(datas.code == 401) {
 				localStorage.removeItem('LoginToken');
 				location.href = '/Login';
+				return;
+			}
+			if(datas.code == 500 || datas.code == 405) {
 				return;
 			}
 			return Promise.resolve(res.data);

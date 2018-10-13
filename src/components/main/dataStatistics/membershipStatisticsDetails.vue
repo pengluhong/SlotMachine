@@ -1,9 +1,7 @@
 <template>
 	<div>
 		<div class="bg-color pd30">
-			<router-link to="/DataStatistics/MembershipStatistics">
-				<el-button type="primary" icon="el-icon-arrow-left">返回</el-button>
-			</router-link>
+			<el-button type="primary" icon="el-icon-arrow-left" @click="_Return">返回</el-button>
 		</div>
 		<div class="pd30 clearfix">
 			<div class="table-responsive">
@@ -103,17 +101,12 @@
 										</thead>
 									</table>
 								</div>
-								<div class="form-group col-lg-7">
-									<div class="table-responsive">
-										<table class="table table-bordered">
-											<tbody>
-												<tr v-for="item in GameResults">
-													<td v-for="items in item.list">
-														<img :src="'/static/images/numbers/'+items+'.png'" />
-													</td>
-												</tr>
-											</tbody>
-										</table>
+								<div class="form-group col-lg-7 clearfix">
+									<div class="pull-right winning-infor border-color">
+										<ul id="winning-infor">
+											<li v-for="item in CurrentItem.cards" :style="'background-image: url(/static/images/numbers/'+item+'.png)'" class="border-color"></li>
+										</ul>
+										<i v-for="item in CurrentItem.line" :style="'background: url(/static/images/lines/line'+item.line+'.png)'"></i>
 									</div>
 								</div>
 							</div>
@@ -134,7 +127,7 @@
 	import AxiosService from "@/assets/scripts/api/axiosService";
 	import Urls from "@/assets/scripts/api/Urls";
 	import Utils from "@/assets/scripts/js/utils";
-	import {formatDate } from "@/assets/scripts/js/TimeStamp";
+	import { formatDate } from "@/assets/scripts/js/TimeStamp";
 	//分页
 	import PagingMain from "@/components/sub/pagingMain/pagingMain";
 	export default {
@@ -146,8 +139,9 @@
 				loadingList: [],
 				//当前牌局信息
 				CurrentItem: [],
-				//游戏结果
-				GameResults: [],
+				player_name: '',
+				startDate: '',
+				endDate: '',
 				//分页
 				pageInfor: {
 					//总列表内容
@@ -170,11 +164,19 @@
 			},
 			//列表初始化
 			_LoadingList() {
+				if(!this.$route.query.data) {
+					return;
+				}
 				let Obj = Utils.Decrypt(this.$route.query.data);
+				this.player_name = Obj.player_name;
+				this.startDate = Obj.start_time;
+				this.endDate = Obj.end_time;
 				let Url = Urls.Url + Urls.MemberInfor;
 				let dataObj = {
-					player_id: Obj.player_id
+					player_id: Obj.player_id,
+					created_at: Obj.created_at
 				}
+				console.log(dataObj);
 				AxiosService.postRequest(Url, dataObj).then((res) => {
 					if(res.code == 200) {
 						this.pageInfor.ListPage = res.data;
@@ -188,21 +190,32 @@
 			//查看游戏结果
 			_SeeGameResults(item) {
 				this.CurrentItem = item;
-				let List = [{
-					list: []
-				}, {
-					list: []
-				}, {
-					list: []
-				}];
-				for(let i = 0; i < List.length; i++) {
-					let z = (i + 1) * 5;
-					for(let j = z - 5; j < z; j++) {
-						List[i].list.push(item.cards[j]);
+				let items = item.line;
+				if(items) {
+					for(let i = 0; i < items.length; i++) {
+						for(let j = 0; j < items[i].element.length; j++) {
+							$('#winning-infor > li').eq(items[i].element[j]).addClass('current');
+						}
 					}
 				}
-				this.GameResults = List;
-			}
+			},
+			//返回
+			_Return() {
+				if(this.player_name == '') {
+					return;
+				}
+				let dataObj = {
+					player_name: this.player_name,
+					start_time: this.startDate,
+					end_time: this.endDate
+				}
+				this.$router.push({
+					path: '/DataStatistics/MembershipStatisticsEveryDay',
+					query: {
+						data: Utils.Encrypt(dataObj)
+					}
+				});
+			},
 		},
 		filters: { //时间戳转换为日期
 			formatDate(time) {

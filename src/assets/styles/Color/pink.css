@@ -62,6 +62,7 @@
 
 #PinkStyle .table,
 #PinkStyle .table th,
-#PinkStyle .table td {
+#PinkStyle .table td,
+#PinkStyle .border-color {
 	border-color: #d18b9c;
 }

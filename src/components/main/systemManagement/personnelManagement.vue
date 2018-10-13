@@ -36,6 +36,7 @@
 					<p>角色</p>
 					<div class="mgt10">
 						<el-select v-model="Search.role_id" placeholder="请选择角色">
+							<el-option key="" label="" value=""></el-option>
 							<el-option v-for="item in RoleList" :key="item.id" :label="item.name" :value="item.id">
 							</el-option>
 						</el-select>
@@ -62,7 +63,7 @@
 					</thead>
 					<tbody v-if="loadingList.length">
 						<tr v-for="(item,index) in loadingList">
-							<td>{{index+1}}</td>
+							<td>{{index+1+currentPage*10}}</td>
 							<td>{{item.account}}</td>
 							<td>{{item.realname}}</td>
 							<td>{{item.role_name}}</td>
@@ -345,6 +346,8 @@
 					//每页显示多少条
 					pageSize: 10,
 				},
+				//当前页
+				currentPage: 0,
 			};
 		},
 		created() {
@@ -352,8 +355,9 @@
 		},
 		methods: {
 			//获取分页信息
-			getPagingCont(msg) {
+			getPagingCont(msg, page) {
 				this.loadingList = msg;
+				this.currentPage = page - 1;
 			},
 			//页面初始化加载
 			_LoadingList() {

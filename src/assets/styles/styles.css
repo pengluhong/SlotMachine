@@ -1,7 +1,6 @@
 html,
 body {
 	width: 100%;
-	min-width: 1400px;
 	font-size: 14px;
 }
 
@@ -306,6 +305,34 @@ textarea {
 	margin-left: 58px;
 }
 
+/*中奖信息展示*/
+.winning-infor {
+	width: 300px;
+	height: 180px;
+	position: relative;
+	font-size: 0;
+}
+
+.winning-infor ul li {
+	width: 60px;
+	height: 60px;
+	border: 1px solid #ddd;
+	display: inline-block;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+.winning-infor ul li.current {
+	background-color: #5bc0de;
+}
+
+.winning-infor > i {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 300px;
+	height: 180px;
+}
 
 /*自定义滚动条CSS*/
 

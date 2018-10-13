@@ -103,7 +103,7 @@
 				let dataObj = this.LoginForm;
 				this.$refs[formName].validate((valid) => {
 					if(valid) {
-						AxiosService.postRequest(Url, dataObj).then((res) => {
+						AxiosService.postRequest(Url, this.LoginForm).then((res) => {
 							if(res.code == 200) {
 								localStorage.setItem('LoginAccount', this.LoginForm.account);
 								localStorage.setItem('LoginToken', res.token);

@@ -62,6 +62,7 @@
 
 #GreenStyle .table,
 #GreenStyle .table th,
-#GreenStyle .table td {
+#GreenStyle .table td,
+#GreenStyle .border-color {
 	border-color: #b2d5b7;
 }

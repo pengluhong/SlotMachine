@@ -43,6 +43,18 @@
 					<el-date-picker v-model="Search.end" type="date" placeholder="请选择结束日期" :picker-options="pickerOptionsEnd" value-format="yyyy-MM-dd" :editable="false"></el-date-picker>
 				</div>
 			</div>
+			<div class="dis-inl-blk mgl16">
+				<!--<el-radio v-model="Search.is_online" label="1" class="text-success">在线</el-radio>
+				<el-radio v-model="Search.is_online" label="0" class="text-danger">离线</el-radio>-->
+				<p>登录状态</p>
+				<div class="mgt10">
+					<el-select v-model="Search.is_online" placeholder="请选择登录状态">
+						<el-option label="全部" value=""></el-option>
+						<el-option label="在线" value="1"></el-option>
+						<el-option label="离线" value="0"></el-option>
+					</el-select>
+				</div>
+			</div>
 			<el-button type="success" icon="el-icon-search" class="v-a-btm mgl16" @click="_Search">查询</el-button>
 		</div>
 		<div class="pd30 clearfix">
@@ -55,6 +67,8 @@
 							<th>账户余额</th>
 							<th>注册时间</th>
 							<th>最近登录时间</th>
+							<th>登录状态</th>
+							<th>IP</th>
 						</tr>
 					</thead>
 					<tbody v-if="loadingList.length">
@@ -64,11 +78,13 @@
 							<td>{{item.balance}}</td>
 							<td>{{item.created_at}}</td>
 							<td>{{item.last_login_time}}</td>
+							<td :class="item.is_online===0? 'text-danger':'text-success'" v-html="item.is_online===0? '离线':'在线'"></td>
+							<td>{{item.login_ip}}</td>
 						</tr>
 					</tbody>
 					<tbody v-else>
 						<tr>
-							<td colspan="5">无数据</td>
+							<td colspan="7">无数据</td>
 						</tr>
 					</tbody>
 				</table>
@@ -116,6 +132,8 @@
 					start: '',
 					//结束时间
 					end: '',
+					//在线状态
+					is_online: '',
 				},
 				Regular: Regular,
 				FV: FV,

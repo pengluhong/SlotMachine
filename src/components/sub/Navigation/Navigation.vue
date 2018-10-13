@@ -5,9 +5,9 @@
 				<li v-for="item in Menus">
 					<a href="javascript:;" class="color bg-color">
 						{{item.menu_name}}
-						<i class="el-icon-arrow-down pull-right"></i>
+						<i class="el-icon-arrow-up pull-right"></i>
 					</a>
-					<ul>
+					<ul style="display: none;">
 						<li v-for="items in item.ChildNodes">
 							<router-link :to="items.front_url" class="color">{{items.menu_name}}</router-link>
 						</li>
@@ -45,10 +45,10 @@
 				//导航收缩
 				$('.nav-content li > a').click(function() {
 					if($(this).siblings('ul').css('display') == 'none') {
-						$(this).siblings('ul').slideDown();
+						$(this).siblings('ul').stop().slideDown();
 						$(this).find('>i').removeClass('el-icon-arrow-up').addClass('el-icon-arrow-down');
 					} else {
-						$(this).siblings('ul').slideUp();
+						$(this).siblings('ul').stop().slideUp();
 						$(this).find('>i').removeClass('el-icon-arrow-down').addClass('el-icon-arrow-up');
 					}
 				});

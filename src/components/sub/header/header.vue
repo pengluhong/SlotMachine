@@ -67,39 +67,53 @@
 					name: '护眼绿'
 				}],
 				//当前颜色风格，默认黑色
-				CurrentColor:'BlackStyle',
+				CurrentColor: 'BlackStyle',
 			}
 		},
-		created(){
+		created() {
 			this.LoadingColor();
 		},
 		methods: {
 			//退出登录
 			SignOut() {
-				localStorage.removeItem('LoginAccount');
-				localStorage.removeItem('LoginToken');
-				localStorage.removeItem('LoginTime');
-				localStorage.removeItem('Menus');
-				this.$store.commit('_Menus');
-				this.$router.replace('/Login');
+				let Url = Urls.Url + Urls.AdminLogout;
+				AxiosService.getRequest(Url).then((res) => {
+					if(res.code === 200) {
+						localStorage.removeItem('LoginAccount');
+						localStorage.removeItem('LoginToken');
+						localStorage.removeItem('LoginTime');
+						localStorage.removeItem('Menus');
+						this.$store.commit('_Menus');
+						this.$router.replace('/Login');
+						this.$message({
+							message: res.msg,
+							type: 'success'
+						});
+					} else {
+						this.$message.error('操作失败！');
+					}
+				});
 			},
 			//选择颜色风格
 			SelectColor(color) {
 				let Url = Urls.Url + Urls.GameTheme;
-				let dataObj = {theme:color}
-				AxiosService.postRequest(Url,dataObj).then((res) => {
-					if(res.code!==1) {
+				let dataObj = {
+					theme: color
+				}
+				AxiosService.postRequest(Url, dataObj).then((res) => {
+					if(res.code !== 1) {
 						this.$message.error(res.msg);
 						return;
 					}
+					this.CurrentColor = color;
 				});
 				document.documentElement.id = color;
 			},
 			//加载网站颜色风格
-			LoadingColor(){
+			LoadingColor() {
 				let Url = Urls.Url + Urls.GameTheme;
 				AxiosService.getRequest(Url).then((res) => {
-					if(res.code==200) {
+					if(res.code == 200) {
 						this.CurrentColor = res.data.theme
 						document.documentElement.id = res.data.theme;
 					}

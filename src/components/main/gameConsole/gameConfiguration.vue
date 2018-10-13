@@ -1,76 +1,81 @@
 <template>
-	<div class="pd30 clearfix">
-		<div v-for="(item,index) in loadingList">
-			<div class="table-responsive">
-				<table class="table table-bordered">
-					<caption>
-						<h1 class="color-white dis-inl-blk">配置{{index+1}}</h1>
-						<button class="btn btn-default btn-xs mgl10" @click="item.bool=item.bool ? false:true" v-html="item.bool ? '打开表格':'收起表格'"></button>
-					</caption>
-				</table>
-				<div class="clearfix gcTableList">
-					<table class="table table-bordered pull-left" style="width: 19% !important;" v-for="(items,index) in item.elements" :style="index==0 ? 'margin-left:0' : 'margin-left:1%'">
+	<div>
+		<div class="bg-color pd30">
+			<el-button type="primary" icon="el-icon-arrow-left" @click="_Return">返回</el-button>
+		</div>
+		<div class="pd30 clearfix">
+			<div v-for="(item,index) in loadingList">
+				<div class="table-responsive">
+					<table class="table table-bordered">
+						<caption>
+							<h1 class="color-white dis-inl-blk">配置{{index+1}}</h1>
+							<button class="btn btn-default btn-xs mgl10" @click="item.bool=item.bool ? false:true" v-html="item.bool ? '打开表格':'收起表格'"></button>
+						</caption>
+					</table>
+					<div class="clearfix gcTableList">
+						<table class="table table-bordered pull-left" style="width: 19% !important;" v-for="(items,index) in item.elements" :style="index==0 ? 'margin-left:0' : 'margin-left:1%'">
+							<thead>
+								<tr>
+									<th>第{{items.column}}列</th>
+									<th>权重</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody v-show="!item.bool">
+								<tr v-for="(itemss,index) in items.elements_arr">
+									<td>
+										<img src="/static/images/head.jpg" width="30" />
+									</td>
+									<td>
+										<p v-if="!itemss.bool">{{itemss.element}}</p>
+										<el-input-number size="mini" v-model="itemss.element" :min="0" :max="1000" v-if="itemss.bool"></el-input-number>
+									</td>
+									<td class="col-lg-4">
+										<div>
+											<button class="btn btn-warning btn-xs" v-if="!itemss.bool" @click="itemss.bool=true;_WeightModification(items.id,index)">修改</button>
+										</div>
+										<div v-if="itemss.bool">
+											<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#gc-WeightUpdate" @click="_DetermineButton(index,itemss.element)">确定</button>
+											<button class="btn btn-xs btn-danger" @click="getLoadingList">取消</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="table-responsive clearfix">
+					<table class="table table-bordered pull-left" style="width: 50% !important;">
 						<thead>
 							<tr>
-								<th>第{{items.column}}列</th>
-								<th>权重</th>
+								<th>共用设置</th>
+								<th>出现概率</th>
 								<th>操作</th>
 							</tr>
 						</thead>
-						<tbody v-show="!item.bool">
-							<tr v-for="(itemss,index) in items.elements_arr">
+						<tbody>
+							<tr v-for="(Arr,index) in item.arr">
+								<td v-html="index==0? '美酒':'全盘奖'"></td>
 								<td>
-									<img src="/static/images/head.jpg" width="30" />
+									<span v-show="!Arr.bool">{{Arr.value}}</span><span v-show="!Arr.bool">‰</span>
+									<el-input-number size="mini" v-model="Arr.value" :min="0" :max="1000" v-show="Arr.bool"></el-input-number>
 								</td>
 								<td>
-									<p v-if="!itemss.bool">{{itemss.element}}</p>
-									<el-input-number size="mini" v-model="itemss.element" :min="0" :max="1000" v-if="itemss.bool"></el-input-number>
-								</td>
-								<td class="col-lg-4">
-									<div>
-										<button class="btn btn-warning btn-xs" v-if="!itemss.bool" @click="itemss.bool=true;_WeightModification(items.id,index)">修改</button>
+									<div v-show="!Arr.bool">
+										<button class="btn btn-warning btn-xs" @click="Arr.bool=Arr.bool ? false:true;_settingClick(Arr.key)">修改</button>
 									</div>
-									<div v-if="itemss.bool">
-										<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#gc-WeightUpdate" @click="_DetermineButton(index,itemss.element)">确定</button>
+									<div v-show="Arr.bool">
+										<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#gc-WeightUpdate" @click="_DetermineButton(index,Arr.value)">确定</button>
 										<button class="btn btn-xs btn-danger" @click="getLoadingList">取消</button>
 									</div>
 								</td>
 							</tr>
 						</tbody>
 					</table>
-				</div>
-			</div>
-			<div class="table-responsive clearfix">
-				<table class="table table-bordered pull-left" style="width: 50% !important;">
-					<thead>
-						<tr>
-							<th>共用设置</th>
-							<th>出现概率</th>
-							<th>操作</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="(Arr,index) in item.arr">
-							<td v-html="index==0? '美酒':'全盘奖'"></td>
-							<td>
-								<span v-show="!Arr.bool">{{Arr.value}}</span><span v-show="!Arr.bool">‰</span>
-								<el-input-number size="mini" v-model="Arr.value" :min="0" :max="1000" v-show="Arr.bool"></el-input-number>
-							</td>
-							<td>
-								<div v-show="!Arr.bool">
-									<button class="btn btn-warning btn-xs" @click="Arr.bool=Arr.bool ? false:true;_settingClick(Arr.key)">修改</button>
-								</div>
-								<div v-show="Arr.bool">
-									<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#gc-WeightUpdate" @click="_DetermineButton(index,Arr.value)">确定</button>
-									<button class="btn btn-xs btn-danger" @click="getLoadingList">取消</button>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<div class="col-lg-6 pull-left" style="margin-top: 40px;">
-					<button class="btn btn-success" @click="_Calculation(item.type)">计算回报率</button>
-					<b v-if="CoreType==item.type">：{{Core}}</b>
+					<div class="col-lg-6 pull-left" style="margin-top: 40px;">
+						<button class="btn btn-success" @click="_Calculation(item.type)">计算回报率</button>
+						<b v-if="CoreType==item.type">：{{Core}}</b>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -100,6 +105,7 @@
 <script>
 	import AxiosService from "@/assets/scripts/api/axiosService";
 	import Urls from "@/assets/scripts/api/Urls";
+	import Utils from "@/assets/scripts/js/utils";
 	export default {
 		data() {
 			return {
@@ -121,6 +127,11 @@
 			}
 		},
 		created() {
+			//获取上级页面传过来的ID
+			/*if(!this.$route.query.data) {
+				return;
+			}
+			let Obj = Utils.Decrypt(this.$route.query.data);*/
 			//加载初始化列表数据
 			this.getLoadingList();
 		},
@@ -200,7 +211,13 @@
 						console.log(res.msg);
 					}
 				});
-			}
+			},
+			//返回
+			_Return() {
+				this.$router.push({
+					path: '/GameConsole/GameList'
+				})
+			},
 		}
 	}
 </script>

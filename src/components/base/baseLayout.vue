@@ -40,7 +40,7 @@
 				} else {
 					setTimeout(function() {
 						that.LoginCount();
-					}, 60000);
+					}, 90000);
 				}
 			}
 		},

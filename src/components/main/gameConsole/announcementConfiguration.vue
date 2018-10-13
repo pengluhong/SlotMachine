@@ -29,7 +29,7 @@
 					</thead>
 					<tbody v-if="loadingList.length">
 						<tr v-for="(item,index) in loadingList">
-							<td>{{index+1}}</td>
+							<td>{{index+1+currentPage*10}}</td>
 							<td>{{item.content}}</td>
 							<td>{{item.quota}}</td>
 							<td>
@@ -210,6 +210,8 @@
 					//每页显示多少条
 					pageSize: 12,
 				},
+				//当前页
+				currentPage: 0,
 			}
 		},
 		created() {
@@ -218,8 +220,9 @@
 		},
 		methods: {
 			//获取分页信息
-			getPagingCont(msg) {
+			getPagingCont(msg, page) {
 				this.loadingList = msg;
+				this.currentPage = page - 1;
 			},
 			getLoadingList() {
 				let Url = Urls.Url + Urls.Notice;

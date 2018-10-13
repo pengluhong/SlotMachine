@@ -310,6 +310,7 @@
 	import { RandomNumber } from "@/assets/scripts/js/RandomNumber";
 	import Regular from "@/assets/scripts/js/regular";
 	import FV from "@/assets/scripts/js/FormValidation";
+
 	export default {
 		data() {
 			let phoneCheck = (rule, value, callback) => {

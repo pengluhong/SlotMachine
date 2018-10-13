@@ -5,6 +5,8 @@ export default {
 	AdminCaptcha: '/admin/captcha',
 	//登录
 	AdminLogin: '/admin/login',
+	//退出
+	AdminLogout:'/admin/logout',
 	//获取菜单
 	GameIndex: '/game/index',
 	
@@ -30,6 +32,8 @@ export default {
 	/*end*/
 
 	/*游戏控制台模块*/
+	//游戏列表
+	GameList:'/game/list',
 	//全局配置
 	GlobalConfiguration: '/game/global',
 	//资金流分配设置修改
@@ -53,9 +57,13 @@ export default {
 
 	/*数据统计模块*/
 	//全局统计
+	AgentStatisticsSum: '/AgentStatistics/sum',
+	//全局统计
 	AgentStatistics: '/AgentStatistics/index',
 	//房间统计
 	RoomStatistics: '/RoomStatistics/index',
+	//会员统计
+	MemberStatisticsSum:'/MemberStatistics/sum',
 	//会员统计
 	MemberStatistics: '/MemberStatistics/index',
 	//会员详情
@@ -87,5 +95,23 @@ export default {
 	/*玩家管理模块*/
 	//玩家列表、搜索
 	GamePlayers:'/game/players',
+	/*end*/
+	
+	/*日志管理模块*/
+	/*系统日志*/
+	SysLogGet:'/SysLog/get',
+	/*项目类型*/
+	SysLogTree:'/SysLog/logTree',
+	/*end*/
+	
+	/*交易记录*/
+	SysLogTrade:'/SysLog/trade',
+	/*end*/
+	
+	/*投注记录*/
+	/*投注记录列表以及查询*/
+	BettingRecordIndex:'/BettingRecord/index',
+	/*游戏类型*/
+	BettingRecordGameType:'/BettingRecord/gameType',
 	/*end*/
 }
